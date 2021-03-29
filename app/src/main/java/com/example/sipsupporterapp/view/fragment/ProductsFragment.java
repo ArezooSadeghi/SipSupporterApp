@@ -102,7 +102,7 @@ public class ProductsFragment extends Fragment {
 
 
     private void setListener() {
-        binding.imgAddProduct.setOnClickListener(new View.OnClickListener() {
+        binding.fabAddNewProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RegisterProductFragment fragment = RegisterProductFragment.newInstance(
@@ -122,7 +122,7 @@ public class ProductsFragment extends Fragment {
         viewModel.getCustomerProductResultSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<CustomerProductResult>() {
             @Override
             public void onChanged(CustomerProductResult productResult) {
-                binding.progressBar.setVisibility(View.GONE);
+                binding.progressBarLoading.setVisibility(View.GONE);
                 binding.recyclerViewProducts.setVisibility(View.VISIBLE);
 
                 StringBuilder stringBuilder = new StringBuilder();
@@ -140,7 +140,7 @@ public class ProductsFragment extends Fragment {
         viewModel.getErrorCustomerProductResultSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                binding.progressBar.setVisibility(View.GONE);
+                binding.progressBarLoading.setVisibility(View.GONE);
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         });
@@ -265,6 +265,4 @@ public class ProductsFragment extends Fragment {
         ProductsAdapter adapter = new ProductsAdapter(getContext(), customerProductsList, viewModel);
         binding.recyclerViewProducts.setAdapter(adapter);
     }
-
-
 }

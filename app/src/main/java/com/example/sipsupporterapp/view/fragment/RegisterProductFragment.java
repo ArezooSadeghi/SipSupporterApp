@@ -2,6 +2,9 @@ package com.example.sipsupporterapp.view.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -52,7 +55,14 @@ public class RegisterProductFragment extends DialogFragment {
 
     public static final String TAG = RegisterProductFragment.class.getSimpleName();
 
-    public static RegisterProductFragment newInstance(int customerID, String productName, String description, long invoicePrice, boolean invoicePayment, boolean finish, boolean isAdd, int customerProductID) {
+    public static RegisterProductFragment newInstance(int customerID,
+                                                      String productName,
+                                                      String description,
+                                                      long invoicePrice,
+                                                      boolean invoicePayment,
+                                                      boolean finish,
+                                                      boolean isAdd,
+                                                      int customerProductID) {
         RegisterProductFragment fragment = new RegisterProductFragment();
         Bundle args = new Bundle();
         args.putInt(ARGS_CUSTOMER_ID, customerID);
@@ -101,10 +111,41 @@ public class RegisterProductFragment extends DialogFragment {
                 false);
 
         binding.txtCustomerName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
-
-
         binding.edTextDescription.setText(description);
         binding.edTextDescription.setSelection(binding.edTextDescription.getText().toString().length());
+
+
+        binding.edTextInvoicePrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                binding.edTextInvoicePrice.removeTextChangedListener(this);
+                try {
+                    String text = editable.toString();
+                    Long textToLong;
+                    if (text.contains(",")) {
+                        text = text.replaceAll(",", "");
+                    }
+                    textToLong = Long.parseLong(text);
+                    NumberFormat numberFormat = new DecimalFormat("#,###");
+                    String currencyFormat = numberFormat.format(textToLong);
+                    binding.edTextInvoicePrice.setText(currencyFormat);
+                    binding.edTextInvoicePrice.setSelection(binding.edTextInvoicePrice.getText().length());
+                } catch (NumberFormatException exception) {
+                    Log.e(TAG, exception.getMessage());
+                }
+                binding.edTextInvoicePrice.addTextChangedListener(this);
+            }
+        });
 
 
         if (finish) {
@@ -114,9 +155,9 @@ public class RegisterProductFragment extends DialogFragment {
         }
 
         if (invoicePayment) {
-            binding.checkBoxInvoicePrice.setChecked(true);
+            binding.checkBoxInvoicePayment.setChecked(true);
         } else {
-            binding.checkBoxInvoicePrice.setChecked(false);
+            binding.checkBoxInvoicePayment.setChecked(false);
         }
 
         setListener();
@@ -142,7 +183,7 @@ public class RegisterProductFragment extends DialogFragment {
 
                 long invoicePrice = Long.valueOf(newText);
                 boolean paymentPrice;
-                if (binding.checkBoxInvoicePrice.isChecked()) {
+                if (binding.checkBoxInvoicePayment.isChecked()) {
                     paymentPrice = true;
                 } else {
                     paymentPrice = false;
@@ -188,7 +229,7 @@ public class RegisterProductFragment extends DialogFragment {
 
 
     private void setItemSelectedListener() {
-        binding.spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+        binding.spinnerProducts.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
                 value = (String) item;
@@ -242,13 +283,9 @@ public class RegisterProductFragment extends DialogFragment {
             @Override
             public void onChanged(ProductResult productResult) {
                 if (invoicePrice == 0) {
-                    NumberFormat formatter = new DecimalFormat("#,###");
-                    String formattedNumber = formatter.format(productResult.getProducts()[0].getCost());
-                    binding.edTextInvoicePrice.setText(formattedNumber);
+                    binding.edTextInvoicePrice.setText(String.valueOf(productResult.getProducts()[0].getCost()));
                 } else {
-                    NumberFormat formatter = new DecimalFormat("#,###");
-                    String formattedNumber = formatter.format(invoicePrice);
-                    binding.edTextInvoicePrice.setText(formattedNumber);
+                    binding.edTextInvoicePrice.setText(String.valueOf(invoicePrice));
                 }
             }
         });
@@ -294,10 +331,10 @@ public class RegisterProductFragment extends DialogFragment {
             value = productName;
             productNameList.remove(productName);
             productNameList.add(0, productName);
-            binding.spinner.setItems(productNameList);
+            binding.spinnerProducts.setItems(productNameList);
         } else {
             value = productNameList.get(0);
-            binding.spinner.setItems(productNameList);
+            binding.spinnerProducts.setItems(productNameList);
         }
     }
 }
