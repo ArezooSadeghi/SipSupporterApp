@@ -208,6 +208,70 @@ public class RetrofitInstance {
                 .build();
     }
 
+    public static Retrofit getRetrofitInstanceForGetProductInfo(Type type, Object typeAdapter, Context context) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new ConnectivityInterceptor(context))
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .cache(null)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl("http://" + BASE_URL + "/api/v1/products/Info/")
+                .addConverterFactory(createConverter(type, typeAdapter))
+                .client(client)
+                .build();
+    }
+
+    public static Retrofit getRetrofitInstanceForDeleteCustomerProduct(Type type, Object typeAdapter, Context context) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new ConnectivityInterceptor(context))
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .cache(null)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl("http://" + BASE_URL + "/api/v1/customerProducts/Delete/")
+                .addConverterFactory(createConverter(type, typeAdapter))
+                .client(client)
+                .build();
+    }
+
+    public static Retrofit getRetrofitInstanceForEditCustomerProduct(Type type, Object typeAdapter, Context context) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new ConnectivityInterceptor(context))
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .cache(null)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl("http://" + BASE_URL + "/api/v1/customerProducts/Edit/")
+                .addConverterFactory(createConverter(type, typeAdapter))
+                .client(client)
+                .build();
+    }
+
+    public static Retrofit getRetrofitInstanceForAttach(Type type, Object typeAdapter, Context context) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new ConnectivityInterceptor(context))
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .cache(null)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl("http://" + BASE_URL + "/api/v1/attach/Add/")
+                .addConverterFactory(createConverter(type, typeAdapter))
+                .client(client)
+                .build();
+    }
+
     public static Converter.Factory createConverter(Type type, Object typeAdapter) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(type, typeAdapter);

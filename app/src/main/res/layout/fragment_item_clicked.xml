@@ -105,18 +105,6 @@
                 app:backgroundTint="@color/yellow" />
 
             <Button
-                android:id="@+id/btn_register_product"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/custom_button_background"
-                android:text="ثبت محصول"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:backgroundTint="@color/yellow" />
-
-            <Button
                 android:id="@+id/btn_see_call_information"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

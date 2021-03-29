@@ -1,5 +1,7 @@
 package com.example.sipsupporterapp.retrofit;
 
+import com.example.sipsupporterapp.model.AttachInfo;
+import com.example.sipsupporterapp.model.AttachResult;
 import com.example.sipsupporterapp.model.CustomerProductResult;
 import com.example.sipsupporterapp.model.CustomerProducts;
 import com.example.sipsupporterapp.model.CustomerResult;
@@ -15,9 +17,11 @@ import com.example.sipsupporterapp.model.UserResult;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface SipSupportService {
@@ -60,4 +64,16 @@ public interface SipSupportService {
 
     @POST(".")
     Call<CustomerProductResult> postCustomerProducts(@Header("userLoginKey") String userLoginKey, @Body CustomerProducts customerProducts);
+
+    @GET(".")
+    Call<ProductResult> getProductInfo(@Header("userLoginKey") String userLoginKey, @Query("productID") int productID);
+
+    @DELETE(".")
+    Call<CustomerProductResult> deleteCustomerProduct(@Header("userLoginKey") String userLoginKey, @Query("customerProductID") int customerProductID);
+
+    @PUT(".")
+    Call<CustomerProductResult> editCustomerProduct(@Header("userLoginKey") String userLoginKey, @Body CustomerProducts customerProducts);
+
+    @POST(".")
+    Call<AttachResult> attach(@Header("userLoginKey") String userLoginKey, @Body AttachInfo attachInfo);
 }

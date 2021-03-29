@@ -177,6 +177,7 @@ public class CustomerUsersFragment extends Fragment {
             @Override
             public void onChanged(Boolean isSuccessfulRegister) {
                 Intent intent = CustomerContainerActivity.newIntent(getContext());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 getActivity().finish();
             }

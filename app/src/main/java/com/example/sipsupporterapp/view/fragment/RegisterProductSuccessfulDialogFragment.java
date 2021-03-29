@@ -10,12 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.FragmentRegisterProductSuccessfulDialogBinding;
+import com.example.sipsupporterapp.viewmodel.RegisterProductViewModel;
 
 public class RegisterProductSuccessfulDialogFragment extends DialogFragment {
     private FragmentRegisterProductSuccessfulDialogBinding binding;
+    private RegisterProductViewModel viewModel;
+    ;
 
     public static final String TAG = RegisterProductSuccessfulDialogFragment.class.getSimpleName();
 
@@ -29,6 +33,8 @@ public class RegisterProductSuccessfulDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(RegisterProductViewModel.class);
     }
 
     @NonNull
@@ -40,6 +46,8 @@ public class RegisterProductSuccessfulDialogFragment extends DialogFragment {
         binding.imgCloseWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewModel.getDialogDismissSingleLiveEvent().setValue(true);
+                viewModel.getProductsFragmentDialogDismissSingleLiveEvent().setValue(true);
                 dismiss();
             }
         });

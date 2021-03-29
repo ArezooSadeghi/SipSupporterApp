@@ -10,6 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.sipsupporterapp.database.SipSupporterDBHelper;
 import com.example.sipsupporterapp.database.SipSupporterSchema;
+import com.example.sipsupporterapp.model.AttachInfo;
+import com.example.sipsupporterapp.model.AttachResult;
 import com.example.sipsupporterapp.model.CustomerProductResult;
 import com.example.sipsupporterapp.model.CustomerProducts;
 import com.example.sipsupporterapp.model.CustomerResult;
@@ -24,11 +26,13 @@ import com.example.sipsupporterapp.model.SupportEventResult;
 import com.example.sipsupporterapp.model.UserLoginParameter;
 import com.example.sipsupporterapp.model.UserResult;
 import com.example.sipsupporterapp.retrofit.AddProductResultDeserializer;
+import com.example.sipsupporterapp.retrofit.AttachResultDeserializer;
 import com.example.sipsupporterapp.retrofit.CustomerProductResultDeserializer;
 import com.example.sipsupporterapp.retrofit.CustomerResultDeserializer;
 import com.example.sipsupporterapp.retrofit.CustomerSupportResultDeserializer;
 import com.example.sipsupporterapp.retrofit.CustomerUserResultDeserializer;
 import com.example.sipsupporterapp.retrofit.DateResultDeserializer;
+import com.example.sipsupporterapp.retrofit.NewProductResultDeserializer;
 import com.example.sipsupporterapp.retrofit.NoConnectivityException;
 import com.example.sipsupporterapp.retrofit.ProductResultDeserializer;
 import com.example.sipsupporterapp.retrofit.RetrofitInstance;
@@ -56,7 +60,8 @@ public class SipSupportRepository {
     private Context context;
     private SipSupportService sipSupportServicePostUserLoginParameter, sipSupportServicePostCustomerParameter, sipSupportServiceChangePassword,
             sipSupportServiceCustomerSupportResult, sipSupportServiceCustomerUserResult, sipSupportServiceSupportEventResult, sipSupportServicePostCustomerSupportInfo,
-            sipSupportServiceGetDateResult, sipSupportServiceGetCustomerProductResult, sipSupportServicePostProductInfo, sipSupportServiceGetProductResult, sipSupportServicePostCustomerProducts;
+            sipSupportServiceGetDateResult, sipSupportServiceGetCustomerProductResult, sipSupportServicePostProductInfo, sipSupportServiceGetProductResult,
+            sipSupportServicePostCustomerProducts, sipSupportServiceForGetProductInfo, sipSupportServiceForDeleteCustomerProduct, sipSupportServiceForEditCustomerProduct, sipSupportServiceAttach;
     private static final String TAG = SipSupportRepository.class.getSimpleName();
 
     private SingleLiveEvent<CustomerResult> customerResultSingleLiveEvent = new SingleLiveEvent<>();
@@ -91,6 +96,17 @@ public class SipSupportRepository {
     private SingleLiveEvent<CustomerProductResult> PostCustomerProductsSingleLiveEvent = new SingleLiveEvent<>();
     private SingleLiveEvent<String> errorPostCustomerProductsSingleLiveEvent = new SingleLiveEvent<>();
 
+    private SingleLiveEvent<ProductResult> productInfoSingleLiveEvent = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> errorProductInfoSingleLiveEvent = new SingleLiveEvent<>();
+
+    private SingleLiveEvent<CustomerProductResult> deleteCustomerProductSingleLiveEvent = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> errorDeleteCustomerProductSingleLiveEvent = new SingleLiveEvent<>();
+
+    private SingleLiveEvent<CustomerProductResult> editCustomerProductSingleLiveEvent = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> errorEditCustomerProductSingleLiveEvent = new SingleLiveEvent<>();
+
+    private SingleLiveEvent<AttachResult> attachResultSingleLiveEvent = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> errorAttachResultSingleLiveEvent = new SingleLiveEvent<>();
 
     private SipSupportRepository(Context context) {
         this.context = context.getApplicationContext();
@@ -187,6 +203,34 @@ public class SipSupportRepository {
         sipSupportServicePostCustomerProducts = RetrofitInstance
                 .getRetrofitInstancePostCustomerProducts(new TypeToken<CustomerProductResult>() {
                 }.getType(), new CustomerProductResultDeserializer(), context).create(SipSupportService.class);
+    }
+
+    public void getSipSupportServiceForGetProductInfo(String baseUrl) {
+        RetrofitInstance.getNewBaseUrl(baseUrl);
+        sipSupportServiceForGetProductInfo = RetrofitInstance
+                .getRetrofitInstanceForGetProductInfo(new TypeToken<ProductResult>() {
+                }.getType(), new NewProductResultDeserializer(), context).create(SipSupportService.class);
+    }
+
+    public void getSipSupportServiceForDeleteCustomerProduct(String baseUrl) {
+        RetrofitInstance.getNewBaseUrl(baseUrl);
+        sipSupportServiceForDeleteCustomerProduct = RetrofitInstance
+                .getRetrofitInstanceForDeleteCustomerProduct(new TypeToken<CustomerProductResult>() {
+                }.getType(), new CustomerProductResultDeserializer(), context).create(SipSupportService.class);
+    }
+
+    public void getSipSupportServiceForEditCustomerProduct(String baseUrl) {
+        RetrofitInstance.getNewBaseUrl(baseUrl);
+        sipSupportServiceForEditCustomerProduct = RetrofitInstance
+                .getRetrofitInstanceForEditCustomerProduct(new TypeToken<CustomerProductResult>() {
+                }.getType(), new CustomerProductResultDeserializer(), context).create(SipSupportService.class);
+    }
+
+    public void getSipSupportServiceAttach(String baseUrl) {
+        RetrofitInstance.getNewBaseUrl(baseUrl);
+        sipSupportServiceAttach = RetrofitInstance
+                .getRetrofitInstanceForAttach(new TypeToken<AttachResult>() {
+                }.getType(), new AttachResultDeserializer(), context).create(SipSupportService.class);
     }
 
     public SingleLiveEvent<CustomerResult> getCustomerResultSingleLiveEvent() {
@@ -307,6 +351,38 @@ public class SipSupportRepository {
 
     public SingleLiveEvent<String> getErrorPostCustomerProductsSingleLiveEvent() {
         return errorPostCustomerProductsSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<ProductResult> getProductInfoSingleLiveEvent() {
+        return productInfoSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<String> getErrorProductInfoSingleLiveEvent() {
+        return errorProductInfoSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<CustomerProductResult> getDeleteCustomerProductSingleLiveEvent() {
+        return deleteCustomerProductSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<String> getErrorDeleteCustomerProductSingleLiveEvent() {
+        return errorDeleteCustomerProductSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<CustomerProductResult> getEditCustomerProductSingleLiveEvent() {
+        return editCustomerProductSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<String> getErrorEditCustomerProductSingleLiveEvent() {
+        return errorEditCustomerProductSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<AttachResult> getAttachResultSingleLiveEvent() {
+        return attachResultSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<String> getErrorAttachResultSingleLiveEvent() {
+        return errorAttachResultSingleLiveEvent;
     }
 
     public void insertServerData(ServerData serverData) {
@@ -876,6 +952,172 @@ public class SipSupportRepository {
 
             @Override
             public void onFailure(Call<CustomerProductResult> call, Throwable t) {
+                if (t instanceof NoConnectivityException) {
+                    noConnection.setValue(t.getMessage());
+                } else if (t instanceof SocketTimeoutException) {
+                    timeoutExceptionHappenSingleLiveEvent.setValue(true);
+                } else {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            }
+        });
+    }
+
+    public void fetchProductInfo(String userLoginKey, int productID) {
+        sipSupportServiceForGetProductInfo.getProductInfo(userLoginKey, productID).enqueue(new Callback<ProductResult>() {
+            @Override
+            public void onResponse(Call<ProductResult> call, Response<ProductResult> response) {
+                if (response.code() == 200) {
+                    if (Integer.valueOf(response.body().getErrorCode()) <= -9001) {
+                        dangerousUserSingleLiveEvent.setValue(true);
+                    } else {
+                        productInfoSingleLiveEvent.setValue(response.body());
+                    }
+
+                } else if (response.code() == 400) {
+                    Gson gson = new GsonBuilder().create();
+                    ProductResult productResult = new ProductResult();
+                    try {
+                        productResult = gson.fromJson(response.errorBody().string(), ProductResult.class);
+                        if (Integer.valueOf(productResult.getErrorCode()) <= -9001) {
+                            dangerousUserSingleLiveEvent.setValue(true);
+                        } else {
+                            errorProductInfoSingleLiveEvent.setValue(productResult.getError());
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProductResult> call, Throwable t) {
+                if (t instanceof NoConnectivityException) {
+                    noConnection.setValue(t.getMessage());
+                } else if (t instanceof SocketTimeoutException) {
+                    timeoutExceptionHappenSingleLiveEvent.setValue(true);
+                } else {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            }
+        });
+    }
+
+    public void deleteCustomerProduct(String userLoginKey, int customerProductID) {
+        sipSupportServiceForDeleteCustomerProduct.deleteCustomerProduct(userLoginKey, customerProductID).enqueue(new Callback<CustomerProductResult>() {
+            @Override
+            public void onResponse(Call<CustomerProductResult> call, Response<CustomerProductResult> response) {
+                if (response.code() == 200) {
+                    if (Integer.valueOf(response.body().getErrorCode()) <= -9001) {
+                        dangerousUserSingleLiveEvent.setValue(true);
+                    } else {
+                        deleteCustomerProductSingleLiveEvent.setValue(response.body());
+                    }
+
+                } else if (response.code() == 400) {
+                    Gson gson = new GsonBuilder().create();
+                    CustomerProductResult customerProductResult = new CustomerProductResult();
+                    try {
+                        customerProductResult = gson.fromJson(response.errorBody().string(), CustomerProductResult.class);
+                        if (Integer.valueOf(customerProductResult.getErrorCode()) <= -9001) {
+                            dangerousUserSingleLiveEvent.setValue(true);
+                        } else {
+                            errorDeleteCustomerProductSingleLiveEvent.setValue(customerProductResult.getError());
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CustomerProductResult> call, Throwable t) {
+                if (t instanceof NoConnectivityException) {
+                    noConnection.setValue(t.getMessage());
+                } else if (t instanceof SocketTimeoutException) {
+                    timeoutExceptionHappenSingleLiveEvent.setValue(true);
+                } else {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            }
+        });
+    }
+
+    public void editCustomerProduct(String userLoginKey, CustomerProducts customerProducts) {
+        sipSupportServiceForEditCustomerProduct.editCustomerProduct(userLoginKey, customerProducts).enqueue(new Callback<CustomerProductResult>() {
+            @Override
+            public void onResponse(Call<CustomerProductResult> call, Response<CustomerProductResult> response) {
+                if (response.code() == 200) {
+                    if (Integer.valueOf(response.body().getErrorCode()) <= -9001) {
+                        dangerousUserSingleLiveEvent.setValue(true);
+                    } else {
+                        editCustomerProductSingleLiveEvent.setValue(response.body());
+                    }
+
+                } else if (response.code() == 400) {
+                    Gson gson = new GsonBuilder().create();
+                    CustomerProductResult customerProductResult = new CustomerProductResult();
+                    try {
+                        customerProductResult = gson.fromJson(response.errorBody().string(), CustomerProductResult.class);
+                        if (Integer.valueOf(customerProductResult.getErrorCode()) <= -9001) {
+                            dangerousUserSingleLiveEvent.setValue(true);
+                        } else {
+                            errorEditCustomerProductSingleLiveEvent.setValue(customerProductResult.getError());
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CustomerProductResult> call, Throwable t) {
+                if (t instanceof NoConnectivityException) {
+                    noConnection.setValue(t.getMessage());
+                } else if (t instanceof SocketTimeoutException) {
+                    timeoutExceptionHappenSingleLiveEvent.setValue(true);
+                } else {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            }
+        });
+    }
+
+    public void attach(String userLoginKey, AttachInfo attachInfo) {
+        sipSupportServiceAttach.attach(userLoginKey, attachInfo).enqueue(new Callback<AttachResult>() {
+            @Override
+            public void onResponse(Call<AttachResult> call, Response<AttachResult> response) {
+                if (response.code() == 200) {
+                    Log.d("Arezoo", "200");
+                    if (Integer.valueOf(response.body().getErrorCode()) <= -9001) {
+
+                        dangerousUserSingleLiveEvent.setValue(true);
+                    } else {
+                        attachResultSingleLiveEvent.setValue(response.body());
+                    }
+
+                } else if (response.code() == 400) {
+                    Gson gson = new GsonBuilder().create();
+                    AttachResult attachResult = new AttachResult();
+                    try {
+                        attachResult = gson.fromJson(response.errorBody().string(), AttachResult.class);
+                        if (Integer.valueOf(attachResult.getErrorCode()) <= -9001) {
+                            dangerousUserSingleLiveEvent.setValue(true);
+                        } else {
+                            errorAttachResultSingleLiveEvent.setValue(attachResult.getError());
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AttachResult> call, Throwable t) {
                 if (t instanceof NoConnectivityException) {
                     noConnection.setValue(t.getMessage());
                 } else if (t instanceof SocketTimeoutException) {

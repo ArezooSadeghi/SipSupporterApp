@@ -23,7 +23,7 @@ public class RegisterProductContainerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.fragment_container_activity);
 
-        int customerID = getIntent().getIntExtra(EXTRA_CUSTOMER_ID, -1);
+       /* int customerID = getIntent().getIntExtra(EXTRA_CUSTOMER_ID, -1);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
@@ -33,7 +33,7 @@ public class RegisterProductContainerActivity extends AppCompatActivity {
                     .beginTransaction()
                     .add(R.id.fragment_container, RegisterProductFragment.newInstance(customerID))
                     .commit();
-        }
+        }*/
     }
 
     public static Intent newIntent(Context context, int customerID) {

@@ -3,6 +3,7 @@ package com.example.sipsupporterapp.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
