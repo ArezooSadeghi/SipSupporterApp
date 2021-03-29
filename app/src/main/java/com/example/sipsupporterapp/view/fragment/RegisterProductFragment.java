@@ -26,6 +26,8 @@ import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.viewmodel.RegisterProductViewModel;
 import com.jaredrummler.materialspinner.MaterialSpinner;
+import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -223,6 +225,26 @@ public class RegisterProductFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 dismiss();
+            }
+        });
+
+        binding.btnDateExpiration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PersianCalendar persianCalendar = new PersianCalendar();
+                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                                binding.btnDateExpiration.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth);
+
+                            }
+                        },
+                        persianCalendar.getPersianYear(),
+                        persianCalendar.getPersianMonth(),
+                        persianCalendar.getPersianDay());
+                datePickerDialog.setThemeDark(true);
+                datePickerDialog.show(getActivity().getFragmentManager(), "datePicker");
             }
         });
     }
