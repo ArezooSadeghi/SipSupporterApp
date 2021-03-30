@@ -31,7 +31,10 @@ import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +45,7 @@ public class RegisterProductFragment extends DialogFragment {
     private String value;
     private int customerID, customerProductID;
     private boolean finish, invoicePayment, isAdd;
-    private long invoicePrice;
+    private long invoicePrice, expireDate;
     private String description, productName;
     private Map<String, Integer> map = new HashMap<>();
 
@@ -54,6 +57,7 @@ public class RegisterProductFragment extends DialogFragment {
     private static final String ARGS_INVOICE_PRICE = "invoicePrice";
     private static final String ARGS_INVOICE_PAYMENT = "invoicePayment";
     private static final String ARGS_CUSTOMER_PRODUCT_ID = "customerProductID";
+    private static final String ARGS_EXPIRE_DATE = "expireDate";
 
     public static final String TAG = RegisterProductFragment.class.getSimpleName();
 
@@ -64,7 +68,7 @@ public class RegisterProductFragment extends DialogFragment {
                                                       boolean invoicePayment,
                                                       boolean finish,
                                                       boolean isAdd,
-                                                      int customerProductID) {
+                                                      int customerProductID, long expireDate) {
         RegisterProductFragment fragment = new RegisterProductFragment();
         Bundle args = new Bundle();
         args.putInt(ARGS_CUSTOMER_ID, customerID);
@@ -75,6 +79,7 @@ public class RegisterProductFragment extends DialogFragment {
         args.putBoolean(ARGS_FINISH, finish);
         args.putBoolean(ARGS_IS_ADD, isAdd);
         args.putInt(ARGS_CUSTOMER_PRODUCT_ID, customerProductID);
+        args.putLong(ARGS_EXPIRE_DATE, expireDate);
         fragment.setArguments(args);
         return fragment;
     }
@@ -92,6 +97,7 @@ public class RegisterProductFragment extends DialogFragment {
         description = getArguments().getString(ARGS_DESCRIPTION);
         isAdd = getArguments().getBoolean(ARGS_IS_ADD);
         customerProductID = getArguments().getInt(ARGS_CUSTOMER_PRODUCT_ID);
+        expireDate = getArguments().getLong(ARGS_EXPIRE_DATE);
 
         viewModel = new ViewModelProvider(requireActivity()).get(RegisterProductViewModel.class);
 
@@ -116,6 +122,9 @@ public class RegisterProductFragment extends DialogFragment {
         binding.edTextDescription.setText(description);
         binding.edTextDescription.setSelection(binding.edTextDescription.getText().toString().length());
 
+        if (expireDate != 0) {
+                binding.btnDateExpiration.setText(String.valueOf(expireDate));
+        }
 
         binding.edTextInvoicePrice.addTextChangedListener(new TextWatcher() {
             @Override
@@ -207,6 +216,7 @@ public class RegisterProductFragment extends DialogFragment {
                 customerProducts.setInvoicePayment(paymentPrice);
                 customerProducts.setFinish(finish);
                 customerProducts.setDescription(description);
+                customerProducts.setExpireDate(expireDate);
 
                 if (isAdd) {
                     ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
@@ -237,7 +247,7 @@ public class RegisterProductFragment extends DialogFragment {
                             @Override
                             public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                                 binding.btnDateExpiration.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth);
-
+                                expireDate = Long.parseLong(year + "" + (monthOfYear + 1) + "" + dayOfMonth);
                             }
                         },
                         persianCalendar.getPersianYear(),

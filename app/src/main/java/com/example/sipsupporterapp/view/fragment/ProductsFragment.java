@@ -111,7 +111,7 @@ public class ProductsFragment extends Fragment {
                         "",
                         0,
                         false,
-                        false, true, -1);
+                        false, true, -1, 0);
                 fragment.show(getParentFragmentManager(), RegisterProductFragment.TAG);
             }
         });
@@ -205,7 +205,7 @@ public class ProductsFragment extends Fragment {
                         customerProducts.getDescription(),
                         customerProducts.getInvoicePrice(),
                         customerProducts.isInvoicePayment(),
-                        customerProducts.isFinish(), false, customerProducts.getCustomerProductID());
+                        customerProducts.isFinish(), false, customerProducts.getCustomerProductID(), customerProducts.getExpireDate());
                 fragment.show(getActivity().getSupportFragmentManager(), RegisterProductFragment.TAG);
             }
         });
