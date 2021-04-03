@@ -53,7 +53,7 @@ public class LoginFragment extends Fragment {
 
         if (viewModel.getServerDataList().size() == 0) {
             EnterIPAddressDialogFragment fragment = EnterIPAddressDialogFragment.newInstance();
-            fragment.show(getChildFragmentManager(), EnterIPAddressDialogFragment.TAG);
+            fragment.show(getParentFragmentManager(), EnterIPAddressDialogFragment.TAG);
         }
     }
 
@@ -68,12 +68,10 @@ public class LoginFragment extends Fragment {
                 container,
                 false);
 
-
         if (SipSupportSharedPreferences.getUserName(getContext()) != null) {
             binding.edTextUserName.setText(SipSupportSharedPreferences.getUserName(getContext()));
             binding.edTextUserName.setSelection(binding.edTextUserName.getText().toString().length());
         }
-
 
         if (viewModel.getServerDataList().size() != 0) {
             setupSpinner();
@@ -224,6 +222,7 @@ public class LoginFragment extends Fragment {
         viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+                binding.progressBar.setVisibility(View.GONE);
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }

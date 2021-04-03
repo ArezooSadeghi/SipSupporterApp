@@ -1,5 +1,6 @@
 package com.example.sipsupporterapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -7,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,12 +51,20 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         int customerProductID = customerProducts.get(position).getCustomerProductID();
 
         holder.binding.imgMore.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(context, holder.binding.imgMore);
-                popup.inflate(R.menu.more_menu);
+                PopupMenu menu = new PopupMenu(context, holder.binding.imgMore);
+                menu.inflate(R.menu.products_adapter_menu);
 
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @SuppressLint("RestrictedApi") MenuPopupHelper menuHelper = new MenuPopupHelper(context, (MenuBuilder) menu.getMenu(), holder.binding.imgMore);
+                menuHelper.setForceShowIcon(true);
+
+
+               /* PopupMenu popup = new PopupMenu(context, holder.binding.imgMore);
+                popup.inflate(R.menu.more_menu);
+*/
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
@@ -72,7 +83,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     }
                 });
 
-                popup.show();
+                menuHelper.show();
             }
         });
     }
