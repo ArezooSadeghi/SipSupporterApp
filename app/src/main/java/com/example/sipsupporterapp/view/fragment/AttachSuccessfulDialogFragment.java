@@ -26,7 +26,6 @@ public class AttachSuccessfulDialogFragment extends DialogFragment {
     public static final String TAG = AttachSuccessfulDialogFragment.class.getSimpleName();
 
     public static AttachSuccessfulDialogFragment newInstance() {
-        Log.d("Arezoo", "Dialog");
         AttachSuccessfulDialogFragment fragment = new AttachSuccessfulDialogFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -58,8 +57,6 @@ public class AttachSuccessfulDialogFragment extends DialogFragment {
         viewModel.getYesAttachAgainSuccessfulDialogSingleLiveEvent().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                Log.d("Arezoo", "Dissmiss");
-                /*dismiss();*/
             }
         });
     }
@@ -80,8 +77,6 @@ public class AttachSuccessfulDialogFragment extends DialogFragment {
         binding.imgClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*AttachAgainDialogFragment fragment = AttachAgainDialogFragment.newInstance();
-                fragment.show(getParentFragmentManager(), AttachAgainDialogFragment.TAG);*/
                  viewModel.getDismissAttachSuccessfulDialogSingleLiveEvent().setValue(true);
                 dismiss();
             }

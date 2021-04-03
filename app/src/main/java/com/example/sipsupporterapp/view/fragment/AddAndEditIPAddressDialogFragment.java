@@ -120,11 +120,9 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
                 if (centerName.isEmpty() || ipAddress.isEmpty() || port.isEmpty()) {
                     ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("لطفا موارد خواسته شده را پر کنید");
                     fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-                    /*Toast.makeText(getContext(), "لطفا موارد خواسته شده را پر کنید", Toast.LENGTH_SHORT).show();*/
                 } else if (ipAddress.length() < 7 || !checkDot(ipAddress) || hasEnglishLetter(ipAddress) || hasEnglishLetter(port)) {
                     ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("فرمت آدرس ip نادرست است");
                     fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-                    /* Toast.makeText(getContext(), "فرمت آدرس ip نادرست است", Toast.LENGTH_SHORT).show();*/
                 } else {
                     List<ServerData> serverDataList = viewModel.getServerDataList();
                     if (serverDataList.size() > 0) {
@@ -132,7 +130,6 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
                             if (serverData1.getCenterName().equals(centerName)) {
                                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("نام مرکز تکراری می باشد");
                                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-                                /*  Toast.makeText(getContext(), "نام مرکز تکراری می باشد", Toast.LENGTH_SHORT).show();*/
                                 flag = true;
                             }
                         }

@@ -52,6 +52,8 @@ public class RegisterProductSuccessfulDialogFragment extends DialogFragment {
             }
         });
 
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
 
         return dialog;
     }

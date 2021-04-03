@@ -45,7 +45,6 @@ public class AttachAgainDialogFragment extends DialogFragment {
         binding.btnYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Arezoo", "attach again dialog called");
                 viewModel.getYesAttachAgainSuccessfulDialogSingleLiveEvent().setValue(true);
                 viewModel.getYesAttachAgainProductFragmentSingleLiveEvent().setValue(true);
                 dismiss();

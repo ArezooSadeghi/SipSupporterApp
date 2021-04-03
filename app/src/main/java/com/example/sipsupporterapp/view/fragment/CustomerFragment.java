@@ -74,7 +74,12 @@ public class CustomerFragment extends Fragment {
                 container,
                 false);
 
-        if (SipSupportSharedPreferences.getLastSearchQuery(getContext()) == null) {
+        String customerName = "";
+        ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
+        viewModel.getSupportServicePostCustomerParameter(serverData.getIpAddress() + ":" + serverData.getPort());
+        viewModel.fetchCustomerResult(SipSupportSharedPreferences.getUserLoginKey(getContext()), customerName);
+
+        /*if (SipSupportSharedPreferences.getLastSearchQuery(getContext()) == null) {
             String customerName = "";
             ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
             viewModel.getSupportServicePostCustomerParameter(serverData.getIpAddress() + ":" + serverData.getPort());
@@ -88,7 +93,7 @@ public class CustomerFragment extends Fragment {
             viewModel.fetchCustomerResult(SipSupportSharedPreferences.getUserLoginKey(getContext()), customerName);
         }
 
-
+*/
         binding.txtUserName.setText(SipSupportSharedPreferences.getUserFullName(getContext()));
 
         initToolbar();

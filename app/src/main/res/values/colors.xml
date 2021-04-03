@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="dark_navy_blue">#001A33</color>
     <color name="yellow">#FDA625</color>
+    <color name="mdtp_accent_color">#FDA625</color>
+    <color name="mdtp_accent_color_dark">#FDA625</color>
 </resources>

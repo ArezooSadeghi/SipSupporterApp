@@ -2,6 +2,9 @@ package com.example.sipsupporterapp.retrofit;
 
 import com.example.sipsupporterapp.model.AttachInfo;
 import com.example.sipsupporterapp.model.AttachResult;
+import com.example.sipsupporterapp.model.BankAccountResult;
+import com.example.sipsupporterapp.model.CustomerPaymentInfo;
+import com.example.sipsupporterapp.model.CustomerPaymentResult;
 import com.example.sipsupporterapp.model.CustomerProductResult;
 import com.example.sipsupporterapp.model.CustomerProducts;
 import com.example.sipsupporterapp.model.CustomerResult;
@@ -76,4 +79,25 @@ public interface SipSupportService {
 
     @POST(".")
     Call<AttachResult> attach(@Header("userLoginKey") String userLoginKey, @Body AttachInfo attachInfo);
+
+    @GET(".")
+    Call<CustomerPaymentResult> getCustomerPaymentResult(@Header("userLoginKey") String userLoginKey, @Query("customerID") int customerID);
+
+    @GET(".")
+    Call<AttachResult> getAttachmentFilesViaCustomerPaymentID(@Header("userLoginKey") String userLoginKey, @Query("customerPaymentID") int paymentID, @Query("LoadFileData") boolean LoadFileData);
+
+    @GET(".")
+    Call<AttachResult> getAttachmentFileViaAttachID(@Header("userLoginKey") String userLoginKey, @Query("attachID") int attachID, @Query("LoadFileData") boolean LoadFileData);
+
+    @PUT(".")
+    Call<CustomerPaymentResult> editCustomerPaymentsResult(@Header("userLoginKey") String userLoginKey, @Body CustomerPaymentInfo customerPaymentInfo);
+
+    @POST(".")
+    Call<CustomerPaymentResult> addCustomerPaymentsResult(@Header("userLoginKey") String userLoginKey, @Body CustomerPaymentInfo customerPaymentInfo);
+
+    @DELETE(".")
+    Call<CustomerPaymentResult> deleteCustomerPayments(@Header("userLoginKey") String userLoginKey, @Query("customerPaymentID") int customerPaymentID);
+
+    @GET(".")
+    Call<BankAccountResult> getBankAccountResult(@Header("userLoginKey") String userLoginKey);
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -56,65 +55,55 @@
             android:orientation="vertical"
             tools:context=".view.fragment.ItemClickedFragment">
 
-            <Button
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_register_support"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/custom_button_background"
-                android:text="ثبت پشتیبانی"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:backgroundTint="@color/yellow" />
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/yellow"
+                android:gravity="center"
+                android:text="ثبت پشتیبانی" />
 
-            <Button
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_history_support"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/custom_button_background"
-                android:text="سابقه پشتیبانی"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:backgroundTint="@color/yellow" />
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/yellow"
+                android:gravity="center"
+                android:text="سابقه پشتیبانی" />
 
-            <Button
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_product_list"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/custom_button_background"
-                android:text="لیست محصولات"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:backgroundTint="@color/yellow" />
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/yellow"
+                android:gravity="center"
+                android:text="لیست محصولات" />
 
-            <Button
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_deposit_amounts"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/custom_button_background"
-                android:text="مبالغ واریزی"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:backgroundTint="@color/yellow" />
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/yellow"
+                android:gravity="center"
+                android:text="مبالغ واریزی" />
 
-            <Button
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_see_call_information"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/custom_button_background"
-                android:text="مشاهده اطلاعات تماس"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:backgroundTint="@color/yellow" />
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/yellow"
+                android:gravity="center"
+                android:text="مشاهده اطلاعات تماس" />
 
         </LinearLayout>
 

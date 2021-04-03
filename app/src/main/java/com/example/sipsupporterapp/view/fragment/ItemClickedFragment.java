@@ -18,6 +18,7 @@ import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.FragmentItemClickedBinding;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.activity.CustomerUsersContainerActivity;
+import com.example.sipsupporterapp.view.activity.DepositAmountsContainerActivity;
 import com.example.sipsupporterapp.view.activity.ProductsContainerActivity;
 import com.example.sipsupporterapp.view.activity.SupportHistoryContainerActivity;
 import com.example.sipsupporterapp.viewmodel.CustomerUsersViewModel;
@@ -95,6 +96,14 @@ public class ItemClickedFragment extends Fragment {
             public void onClick(View v) {
                 ShowInformationCallDialogFragment fragment = ShowInformationCallDialogFragment.newInstance();
                 fragment.show(getParentFragmentManager(), ShowInformationCallDialogFragment.TAG);
+            }
+        });
+
+        binding.btnDepositAmounts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = DepositAmountsContainerActivity.newIntent(getContext(), customerID);
+                startActivity(intent);
             }
         });
     }

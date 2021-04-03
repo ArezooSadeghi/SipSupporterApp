@@ -1,6 +1,8 @@
 package com.example.sipsupporterapp.view.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +50,7 @@ public class SupportHistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         customerID = getArguments().getInt(ARGS_CUSTOMER_ID);
-        viewModel = new ViewModelProvider(this).get(SupportHistoryViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(SupportHistoryViewModel.class);
     }
 
     @Override
@@ -127,6 +129,35 @@ public class SupportHistoryFragment extends Fragment {
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
         });
+
+        viewModel.getAttachFileClicked().observe(getViewLifecycleOwner(), new Observer<CustomerSupportInfo>() {
+            @Override
+            public void onChanged(CustomerSupportInfo customerSupportInfo) {
+                AttachSupportHistoryDialogFragment fragment = AttachSupportHistoryDialogFragment.newInstance(
+                        customerSupportInfo.getCustomerID(), customerSupportInfo.getCustomerSupportID());
+                fragment.show(getParentFragmentManager(), AttachSupportHistoryDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getRequestPermissionSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, 6);
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 6:
+                if (grantResults == null || grantResults.length == 0) {
+                    return;
+                }
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    viewModel.getAllowPermissionSingleLiveEvent().setValue(true);
+                }
+        }
     }
 
     private void initRecyclerView() {
@@ -141,7 +172,7 @@ public class SupportHistoryFragment extends Fragment {
         for (CustomerSupportInfo customerSupportInfo : customerSupportInfos) {
             customerSupportInfoList.add(customerSupportInfo);
         }
-        CustomerSupportInfoAdapter adapter = new CustomerSupportInfoAdapter(getContext(), customerSupportInfoList);
+        CustomerSupportInfoAdapter adapter = new CustomerSupportInfoAdapter(getContext(), customerSupportInfoList, viewModel);
         binding.recyclerViewSupportHistory.setAdapter(adapter);
     }
 

@@ -22,12 +22,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/img_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:background="@color/white"
             android:src="@drawable/ic_more"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/yekan"
             android:textColor="@color/black"
             android:textDirection="rtl"
@@ -76,6 +77,7 @@
             android:textColor="#696969"
             android:textDirection="rtl"
             android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/check_box_invoice_payment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_invoice_price" />
 

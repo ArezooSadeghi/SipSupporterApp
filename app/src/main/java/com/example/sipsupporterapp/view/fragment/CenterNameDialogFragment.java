@@ -79,7 +79,7 @@ public class CenterNameDialogFragment extends DialogFragment {
                 null,
                 false);
 
-        binding.edTextCustomerName.setText(SipSupportSharedPreferences.getLastSearchQuery(getContext()));
+     /*   binding.edTextCustomerName.setText(SipSupportSharedPreferences.getLastSearchQuery(getContext()));*/
 
         binding.edTextCustomerName.setSelection(binding.edTextCustomerName.getText().length());
 

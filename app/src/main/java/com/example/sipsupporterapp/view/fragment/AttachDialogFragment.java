@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -117,7 +116,6 @@ public class AttachDialogFragment extends DialogFragment {
             public void onChanged(Boolean dismissAttachSuccessfulDialog) {
                 AttachAgainDialogFragment fragment = AttachAgainDialogFragment.newInstance();
                 fragment.show(getParentFragmentManager(), AttachAgainDialogFragment.TAG);
-                /*dismiss();*/
             }
         });
 
@@ -134,7 +132,6 @@ public class AttachDialogFragment extends DialogFragment {
 
                 File file = new File(uri.getPath());
                 fileName = file.getName();
-
                 AttachInfo attachInfo = new AttachInfo();
                 attachInfo.setCustomerID(customerID);
                 attachInfo.setCustomerProductID(customerProductID);
@@ -170,6 +167,7 @@ public class AttachDialogFragment extends DialogFragment {
                 uri = null;
                 binding.img.setImageResource(0);
                 fragment = null;
+                binding.edTextDescription.setText("");
             }
         });
     }
@@ -209,20 +207,11 @@ public class AttachDialogFragment extends DialogFragment {
                     e.printStackTrace();
                 }
 
-                /*binding.img.setImageURI(uri);*/
                 binding.img.setImageBitmap(bitmap);
 
             } else if (requestCode == TAKE_PICTURE_REQUEST_CODE) {
                 uri = FileProvider.getUriForFile(
                         getActivity(), AUTHORITY, file);
-
-               /* try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
-
-                /* binding.img.setImageURI(uri);*/
 
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
@@ -247,25 +236,6 @@ public class AttachDialogFragment extends DialogFragment {
                     binding.img.setImageBitmap(bitmap);
                 }
 
-
-
-               /* BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-
-                BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-
-                int imageHeight = options.outHeight;
-                int imageWidth = options.outWidth;
-
-                if (imageWidth > imageHeight) {
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate(90);
-                    newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                    binding.img.setImageBitmap(newBitmap);
-                } else {
-                    binding.img.setImageBitmap(bitmap);
-                }
-*/
                 getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             }
         }
@@ -303,20 +273,7 @@ public class AttachDialogFragment extends DialogFragment {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-
                             viewModel.getFileDataSingleLiveEvent().postValue(convertBitmapToString(bitmap));
-                            /*if (bitmap == null) {
-                                viewModel.getFileDataSingleLiveEvent().postValue(convertBitmapToString(newBitmap));
-                            } else {
-                                viewModel.getFileDataSingleLiveEvent().postValue(convertBitmapToString(bitmap));
-                            }*/
-
-                            /* try {
-                             *//*viewModel.getFileDataSingleLiveEvent().postValue(getBytes(uri));*//*
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }*/
                         }
                     }).start();
                 }

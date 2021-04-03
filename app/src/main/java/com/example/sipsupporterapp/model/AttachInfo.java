@@ -8,7 +8,7 @@ public class AttachInfo {
     private int customerProductID;
     private int paymentID;
     private String fileName;
-    private String fileData;
+    private String FileData;
     private String description;
     private int userID;
     private String userFullName;
@@ -71,11 +71,11 @@ public class AttachInfo {
     }
 
     public String getFileData() {
-        return fileData;
+        return FileData;
     }
 
     public void setFileData(String fileData) {
-        this.fileData = fileData;
+        this.FileData = fileData;
     }
 
     public String getDescription() {

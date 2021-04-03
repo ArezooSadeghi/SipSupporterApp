@@ -31,10 +31,7 @@ import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,8 +120,15 @@ public class RegisterProductFragment extends DialogFragment {
         binding.edTextDescription.setSelection(binding.edTextDescription.getText().toString().length());
 
         if (expireDate != 0) {
-                binding.btnDateExpiration.setText(String.valueOf(expireDate));
+            String date = String.valueOf(expireDate);
+            String year = date.substring(0, 4);
+            String month = date.substring(4, 6);
+            String day = date.substring(6);
+            String dateFormat = year + "/" + month + "/" + day;
+            String persianDateFormat = convertEnToPer(dateFormat);
+            binding.btnDateExpiration.setText(dateFormat);
         }
+
 
         binding.edTextInvoicePrice.addTextChangedListener(new TextWatcher() {
             @Override
@@ -246,14 +250,24 @@ public class RegisterProductFragment extends DialogFragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                                binding.btnDateExpiration.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth);
-                                expireDate = Long.parseLong(year + "" + (monthOfYear + 1) + "" + dayOfMonth);
+                                if (String.valueOf(monthOfYear + 1).length() == 1 & String.valueOf(dayOfMonth).length() == 1) {
+                                    expireDate = Long.valueOf(year + "0" + (monthOfYear + 1) + "0" + dayOfMonth);
+                                    binding.btnDateExpiration.setText(year + "/" + "0" + (monthOfYear + 1) + "/" + "0" + dayOfMonth);
+                                } else if (String.valueOf(monthOfYear + 1).length() == 1) {
+                                    expireDate = Long.valueOf(year + "0" + (monthOfYear + 1) + dayOfMonth);
+                                    binding.btnDateExpiration.setText(year + "/" + "0" + (monthOfYear + 1) + "/" + dayOfMonth);
+                                } else if (String.valueOf(dayOfMonth).length() == 1) {
+                                    expireDate = Long.valueOf(year + (monthOfYear + 1) + "0" + dayOfMonth);
+                                    binding.btnDateExpiration.setText(year + "/" + (monthOfYear + 1) + "/" + "0" + dayOfMonth);
+                                } else {
+                                    expireDate = Long.valueOf(String.valueOf(year + (monthOfYear + 1) + dayOfMonth));
+                                    binding.btnDateExpiration.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth);
+                                }
                             }
                         },
                         persianCalendar.getPersianYear(),
                         persianCalendar.getPersianMonth(),
                         persianCalendar.getPersianDay());
-                datePickerDialog.setThemeDark(true);
                 datePickerDialog.show(getActivity().getFragmentManager(), "datePicker");
             }
         });
@@ -325,7 +339,8 @@ public class RegisterProductFragment extends DialogFragment {
         viewModel.getErrorProductInfoSingleLiveEvent().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                //TODO
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
         });
 
@@ -351,6 +366,14 @@ public class RegisterProductFragment extends DialogFragment {
                 fragment.show(getActivity().getSupportFragmentManager(), ErrorDialogFragment.TAG);
             }
         });
+
+        viewModel.getNoConnection().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String noConnection) {
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(noConnection);
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
     }
 
     private void setupSpinner(ProductInfo[] productInfoArray) {
@@ -368,5 +391,19 @@ public class RegisterProductFragment extends DialogFragment {
             value = productNameList.get(0);
             binding.spinnerProducts.setItems(productNameList);
         }
+    }
+
+    private String convertEnToPer(String date) {
+        return date = date
+                .replaceAll("0", "۰")
+                .replaceAll("1", "۱")
+                .replaceAll("2", "۲")
+                .replaceAll("3", "۳")
+                .replaceAll("4", "۴")
+                .replaceAll("5", "۵")
+                .replaceAll("6", "۶")
+                .replaceAll("7", "۷")
+                .replaceAll("8", "۸")
+                .replaceAll("9", "۹ ");
     }
 }
