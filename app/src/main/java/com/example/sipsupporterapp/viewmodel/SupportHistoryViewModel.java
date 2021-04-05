@@ -37,6 +37,8 @@ public class SupportHistoryViewModel extends AndroidViewModel {
     private SingleLiveEvent<Boolean> yesAgain = new SingleLiveEvent<>();
     private SingleLiveEvent<Boolean> noAgain = new SingleLiveEvent<>();
 
+    private SingleLiveEvent<CustomerSupportInfo> mCustomerSupportInfoAdapterSeeDocumentClickedSingleLiveEvent = new SingleLiveEvent<>();
+
     public SupportHistoryViewModel(@NonNull Application application) {
         super(application);
         repository = SipSupportRepository.getInstance(getApplication());
@@ -123,6 +125,10 @@ public class SupportHistoryViewModel extends AndroidViewModel {
 
     public SingleLiveEvent<String> getErrorAttachResultSingleLiveEvent() {
         return errorAttachResultSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<CustomerSupportInfo> getCustomerSupportInfoAdapterSeeDocumentClickedSingleLiveEvent() {
+        return mCustomerSupportInfoAdapterSeeDocumentClickedSingleLiveEvent;
     }
 
     public void setErrorAttachResultSingleLiveEvent(SingleLiveEvent<String> errorAttachResultSingleLiveEvent) {

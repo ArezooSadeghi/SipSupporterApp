@@ -15,11 +15,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/item_add_document"
-        android:title="افزودن مستندات"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/item_see_documents"
         android:title="مشاهده مستندات"
         app:showAsAction="never" />

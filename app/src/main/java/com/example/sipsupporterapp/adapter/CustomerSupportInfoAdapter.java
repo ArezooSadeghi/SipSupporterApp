@@ -19,8 +19,6 @@ import com.example.sipsupporterapp.databinding.CustomerSupportInfoAdapterItemBin
 import com.example.sipsupporterapp.model.CustomerSupportInfo;
 import com.example.sipsupporterapp.viewmodel.SupportHistoryViewModel;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 
 public class CustomerSupportInfoAdapter extends RecyclerView.Adapter<CustomerSupportInfoAdapter.CustomerSupportInfoHolder> {
@@ -64,8 +62,9 @@ public class CustomerSupportInfoAdapter extends RecyclerView.Adapter<CustomerSup
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.item_add_document:
-                                viewModel.getAttachFileClicked().setValue(customerSupportInfoList.get(position));
+                            case R.id.item_see_documents:
+                                /*viewModel.getAttachFileClicked().setValue(customerSupportInfoList.get(position));*/
+                                viewModel.getCustomerSupportInfoAdapterSeeDocumentClickedSingleLiveEvent().setValue(customerSupportInfoList.get(position));
                                 return true;
                             default:
                                 return false;

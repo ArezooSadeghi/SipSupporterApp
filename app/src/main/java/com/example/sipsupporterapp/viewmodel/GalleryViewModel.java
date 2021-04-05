@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.example.sipsupporterapp.model.AttachInfo;
 import com.example.sipsupporterapp.model.AttachResult;
+import com.example.sipsupporterapp.model.CustomerProducts;
 import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.repository.SipSupportRepository;
 

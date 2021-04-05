@@ -24,6 +24,7 @@ import com.example.sipsupporterapp.model.CustomerPaymentResult;
 import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.activity.GalleryContainerActivity;
+import com.example.sipsupporterapp.view.activity.ImageListContainerActivity;
 import com.example.sipsupporterapp.viewmodel.DepositAmountsViewModel;
 
 import java.util.ArrayList;
@@ -166,7 +167,9 @@ public class DepositAmountsFragment extends Fragment {
         viewModel.getSeeDocumentsClickedSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<CustomerPaymentInfo>() {
             @Override
             public void onChanged(CustomerPaymentInfo customerPaymentInfo) {
-                Intent intent = GalleryContainerActivity.newIntent(getContext(), customerPaymentInfo.getCustomerID(), customerPaymentInfo.getCustomerPaymentID());
+                /*Intent intent = GalleryContainerActivity.newIntent(getContext(), customerPaymentInfo.getCustomerID(), customerPaymentInfo.getCustomerPaymentID());
+                startActivity(intent);*/
+                Intent intent = ImageListContainerActivity.newIntent(getContext(), customerPaymentInfo.getCustomerID(), 0, 0, customerPaymentInfo.getCustomerPaymentID());
                 startActivity(intent);
             }
         });

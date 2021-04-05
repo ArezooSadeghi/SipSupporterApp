@@ -115,7 +115,7 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
                 flag = false;
                 String centerName = binding.edTextCenterName.getText().toString();
                 String ipAddress = binding.edTextIpAddress.getText().toString();
-                String port = binding.edTextPort.getText().toString();
+                String port = binding.edTextPort.getText().toString().trim();
 
                 if (centerName.isEmpty() || ipAddress.isEmpty() || port.isEmpty()) {
                     ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("لطفا موارد خواسته شده را پر کنید");

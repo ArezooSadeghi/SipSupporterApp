@@ -373,6 +373,8 @@ public class AttachDepositAmountsDialogFragment extends DialogFragment {
     }
 
 
+
+
     private String convertBitmapToString(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);

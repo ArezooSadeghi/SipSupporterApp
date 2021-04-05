@@ -25,6 +25,7 @@ import com.example.sipsupporterapp.model.CustomerSupportInfo;
 import com.example.sipsupporterapp.model.CustomerSupportResult;
 import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
+import com.example.sipsupporterapp.view.activity.ImageListContainerActivity;
 import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
 import com.example.sipsupporterapp.viewmodel.SupportHistoryViewModel;
 
@@ -143,6 +144,14 @@ public class SupportHistoryFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 requestPermissions(new String[]{Manifest.permission.CAMERA}, 6);
+            }
+        });
+
+        viewModel.getCustomerSupportInfoAdapterSeeDocumentClickedSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<CustomerSupportInfo>() {
+            @Override
+            public void onChanged(CustomerSupportInfo customerSupportInfo) {
+                Intent intent = ImageListContainerActivity.newIntent(getContext(), customerSupportInfo.getCustomerID(), customerSupportInfo.getCustomerSupportID(), 0, 0);
+                startActivity(intent);
             }
         });
     }

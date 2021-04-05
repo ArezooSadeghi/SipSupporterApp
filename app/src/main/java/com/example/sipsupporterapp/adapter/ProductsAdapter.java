@@ -74,8 +74,10 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                             case R.id.item_delete:
                                 viewModel.getDeleteClickedSingleLiveEvent().setValue(customerProductID);
                                 return true;
-                            case R.id.item_add_document:
-                                viewModel.getAttachFileSingleLiveEvent().setValue(customerProducts.get(position));
+                            case R.id.item_see_documents:
+                                viewModel.getProductAdapterSeeDocumentsClickedSingleLiveEvent().setValue(customerProducts.get(position));
+                                /*viewModel.getAttachFileSingleLiveEvent().setValue(customerProducts.get(position));*/
+                                /* viewModel.getProductAdapterSeeDocumentsClickedSingleLiveEvent().setValue(customerProducts.get(position));*/
                                 return true;
                             default:
                                 return false;

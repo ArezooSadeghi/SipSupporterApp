@@ -63,7 +63,6 @@ public class IPAddressAdapter extends RecyclerView.Adapter<IPAddressAdapter.IPAd
             @Override
             public void onClick(View v) {
                 viewModel.getUpdateIPAddressListSingleLiveEvent().setValue(serverData);
-                viewModel.getUpdateSpinnerSingleLiveEvent().setValue(true);
             }
         });
     }

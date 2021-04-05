@@ -1,6 +1,7 @@
 package com.example.sipsupporterapp.view.fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ import com.example.sipsupporterapp.model.CustomerProductResult;
 import com.example.sipsupporterapp.model.CustomerProducts;
 import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
+import com.example.sipsupporterapp.view.activity.GalleryProductsContainerActivity;
+import com.example.sipsupporterapp.view.activity.ImageListContainerActivity;
 import com.example.sipsupporterapp.viewmodel.RegisterProductViewModel;
 
 import java.util.ArrayList;
@@ -239,6 +242,16 @@ public class ProductsFragment extends Fragment {
             public void onChanged(String error) {
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getProductAdapterSeeDocumentsClickedSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<CustomerProducts>() {
+            @Override
+            public void onChanged(CustomerProducts customerProducts) {
+                /*Intent intent = GalleryProductsContainerActivity.newIntent(getContext(), customerID, customerProductID);
+                startActivity(intent);*/
+                Intent intent = ImageListContainerActivity.newIntent(getContext(), customerProducts.getCustomerID(), 0, customerProducts.getCustomerProductID(), 0);
+                startActivity(intent);
             }
         });
     }
