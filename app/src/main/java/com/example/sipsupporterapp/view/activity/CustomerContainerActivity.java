@@ -3,6 +3,7 @@ package com.example.sipsupporterapp.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.FragmentContainerActivityBinding;
+import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.fragment.CustomerFragment;
 
 public class CustomerContainerActivity extends AppCompatActivity {
@@ -35,5 +37,11 @@ public class CustomerContainerActivity extends AppCompatActivity {
 
     public static Intent newIntent(Context context) {
         return new Intent(context, CustomerContainerActivity.class);
+    }
+
+    @Override
+    protected void onDestroy() {
+        SipSupportSharedPreferences.setLastSearchQuery(this, null);
+        super.onDestroy();
     }
 }

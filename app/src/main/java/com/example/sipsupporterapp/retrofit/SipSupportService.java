@@ -87,6 +87,12 @@ public interface SipSupportService {
     Call<AttachResult> getAttachmentFilesViaCustomerPaymentID(@Header("userLoginKey") String userLoginKey, @Query("customerPaymentID") int paymentID, @Query("LoadFileData") boolean LoadFileData);
 
     @GET(".")
+    Call<AttachResult> getAttachmentFilesViaCustomerProductID(@Header("userLoginKey") String userLoginKey, @Query("customerProductID") int customerProductID, @Query("LoadFileData") boolean LoadFileData);
+
+    @GET(".")
+    Call<AttachResult> getAttachmentFilesViaCustomerSupportID(@Header("userLoginKey") String userLoginKey, @Query("customerSupportID") int customerSupportID, @Query("LoadFileData") boolean LoadFileData);
+
+    @GET(".")
     Call<AttachResult> getAttachmentFileViaAttachID(@Header("userLoginKey") String userLoginKey, @Query("attachID") int attachID, @Query("LoadFileData") boolean LoadFileData);
 
     @PUT(".")

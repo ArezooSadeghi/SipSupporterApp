@@ -3,14 +3,9 @@ package com.example.sipsupporterapp.view.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,8 +21,6 @@ import com.example.sipsupporterapp.model.UserResult;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
 import com.example.sipsupporterapp.viewmodel.ChangePasswordDialogViewModel;
-
-import java.util.List;
 
 public class ChangePasswordDialogFragment extends DialogFragment {
     private FragmentChangePasswordDialogBinding binding;
@@ -73,33 +66,10 @@ public class ChangePasswordDialogFragment extends DialogFragment {
                 if (binding.edTextNewPassword.getText().toString().length() > 12 || binding.edTextRepeatNewPassword.getText().toString().length() > 12) {
                     ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("حداکثر 12 کاراکتر مجاز می باشد");
                     fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-                    /*Toast toast = Toast.makeText(getContext(), "حداکثر 12 کاراکتر مجاز می باشد", Toast.LENGTH_SHORT);
-
-                    View view = toast.getView();
-
-                    view.getBackground().setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_IN);
-
-                    TextView text = view.findViewById(android.R.id.message);
-                    text.setTextColor(Color.parseColor("#FFFFFF"));
-
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();*/
                 } else {
                     if (!binding.edTextNewPassword.getText().toString().equals(binding.edTextRepeatNewPassword.getText().toString())) {
                         ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("عدم تطابق رمز ها");
                         fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-                        /*Toast toast = Toast.makeText(getContext(), "عدم تطابق رمز ها", Toast.LENGTH_SHORT);
-
-                        View view = toast.getView();
-
-                        view.getBackground().setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_IN);
-
-                        TextView text = view.findViewById(android.R.id.message);
-                        text.setTextColor(Color.parseColor("#FFFFFF"));
-
-
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();*/
                     } else {
                         ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
                         viewModel.getSipSupportServiceChangePassword(serverData.getIpAddress() + ":" + serverData.getPort());
@@ -123,9 +93,8 @@ public class ChangePasswordDialogFragment extends DialogFragment {
             @Override
             public void onChanged(UserResult userResult) {
                 SipSupportSharedPreferences.setUserLoginKey(getContext(), userResult.getUsers()[0].getUserLoginKey());
-                Toast toast = Toast.makeText(getContext(), "رمز عبور با موفقیت تغییر کرد", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+                SuccessChangePasswordDialogFragment fragment = SuccessChangePasswordDialogFragment.newInstance();
+                fragment.show(getParentFragmentManager(), SuccessChangePasswordDialogFragment.TAG);
                 dismiss();
             }
         });
@@ -135,17 +104,6 @@ public class ChangePasswordDialogFragment extends DialogFragment {
             public void onChanged(String errorChangedPassword) {
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(errorChangedPassword);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-               /* Toast toast = Toast.makeText(getContext(), errorChangedPassword, Toast.LENGTH_SHORT);
-
-                View view = toast.getView();
-
-                view.getBackground().setColorFilter(Color.parseColor("#FF0000"), PorterDuff.Mode.SRC_IN);
-
-                TextView text = view.findViewById(android.R.id.message);
-                text.setTextColor(Color.parseColor("#FFFFFF"));
-
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();*/
             }
         });
 
@@ -154,10 +112,10 @@ public class ChangePasswordDialogFragment extends DialogFragment {
             public void onChanged(Boolean aBoolean) {
                 SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
                 SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
+                SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
                 SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerTel(getContext(), null);
+                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
                 Intent intent = LoginContainerActivity.newIntent(getContext());
                 startActivity(intent);
                 getActivity().finish();
@@ -168,6 +126,14 @@ public class ChangePasswordDialogFragment extends DialogFragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getNoConnection().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
         });

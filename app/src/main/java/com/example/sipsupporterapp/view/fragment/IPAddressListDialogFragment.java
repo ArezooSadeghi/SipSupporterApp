@@ -140,28 +140,5 @@ public class IPAddressListDialogFragment extends DialogFragment {
                 viewModel.deleteServerData(serverData);
             }
         });
-
-        viewModel.getDangerousUserSingleLiveEvent().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
-                SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
-                SipSupportSharedPreferences.setCustomerName(getContext(), null);
-                Intent intent = LoginContainerActivity.newIntent(getContext());
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
-
-        viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
-                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-            }
-        });
     }
 }

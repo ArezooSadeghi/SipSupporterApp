@@ -50,6 +50,7 @@ public class RegisterSupportDialogFragment extends DialogFragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +65,7 @@ public class RegisterSupportDialogFragment extends DialogFragment {
         setObservable();
     }
 
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -75,6 +77,17 @@ public class RegisterSupportDialogFragment extends DialogFragment {
 
         AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(binding.getRoot()).create();
 
+        setListener();
+        setItemSelected();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        return dialog;
+    }
+
+
+    private void setListener() {
         binding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,19 +114,18 @@ public class RegisterSupportDialogFragment extends DialogFragment {
                 }
             }
         });
+    }
 
+
+    private void setItemSelected() {
         binding.spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
                 value = (String) item;
             }
         });
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCanceledOnTouchOutside(false);
-
-        return dialog;
     }
+
 
     private void setObservable() {
         viewModel.getSupportEventResultSingleLiveEvent().observe(this, new Observer<SupportEventResult>() {
@@ -164,10 +176,10 @@ public class RegisterSupportDialogFragment extends DialogFragment {
             public void onChanged(Boolean aBoolean) {
                 SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
                 SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
+                SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
                 SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
                 SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerTel(getContext(), null);
                 Intent intent = LoginContainerActivity.newIntent(getContext());
                 startActivity(intent);
                 getActivity().finish();
@@ -176,7 +188,7 @@ public class RegisterSupportDialogFragment extends DialogFragment {
 
         viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
+            public void onChanged(Boolean isTimeOutExceptionHappen) {
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
@@ -195,5 +207,4 @@ public class RegisterSupportDialogFragment extends DialogFragment {
         binding.spinner.setItems(supportEventList);
         value = "خدمات تلفني";
     }
-
 }

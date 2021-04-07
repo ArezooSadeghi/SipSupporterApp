@@ -1,8 +1,6 @@
 package com.example.sipsupporterapp.view.fragment;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +8,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -33,10 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SupportHistoryFragment extends Fragment {
-
     private FragmentSupportHistoryBinding binding;
     private SupportHistoryViewModel viewModel;
+
     private int customerID;
+
     private static final String ARGS_CUSTOMER_ID = "customerID";
 
     public static SupportHistoryFragment newInstance(int customerID) {
@@ -47,12 +45,16 @@ public class SupportHistoryFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         customerID = getArguments().getInt(ARGS_CUSTOMER_ID);
+
         viewModel = new ViewModelProvider(requireActivity()).get(SupportHistoryViewModel.class);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,110 +66,26 @@ public class SupportHistoryFragment extends Fragment {
                 container,
                 false);
 
-        initToolbar();
-
         binding.txtUserFullName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
-
-        ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
-        viewModel.getSipSupportServiceCustomerSupportResult(serverData.getIpAddress() + ":" + serverData.getPort());
-        viewModel.getCustomerSupportResult(SipSupportSharedPreferences.getUserLoginKey(getContext()), customerID);
-
         initRecyclerView();
+
+        ServerData serverData = viewModel
+                .getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
+        viewModel.getSipSupportServiceCustomerSupportResult(
+                serverData.getIpAddress() + ":" + serverData.getPort());
+        viewModel.getCustomerSupportResult(
+                SipSupportSharedPreferences.getUserLoginKey(getContext()), customerID);
 
         return binding.getRoot();
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel.getCustomerSupportResult().observe(getViewLifecycleOwner(), new Observer<CustomerSupportResult>() {
-            @Override
-            public void onChanged(CustomerSupportResult customerSupportResult) {
-                binding.progressBar.setVisibility(View.GONE);
-                binding.recyclerViewSupportHistory.setVisibility(View.VISIBLE);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                String listSize = String.valueOf(customerSupportResult.getCustomerSupports().length);
-
-                for (int i = 0; i < listSize.length(); i++) {
-                    stringBuilder.append((char) ((int) listSize.charAt(i) - 48 + 1632));
-                }
-
-
-                binding.txtCount.setText("تعداد پشتیبانی ها: " + stringBuilder.toString());
-                setupAdapter(customerSupportResult.getCustomerSupports());
-            }
-        });
-
-        viewModel.getDangerousUserSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
-                SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
-                SipSupportSharedPreferences.setCustomerName(getContext(), null);
-                Intent intent = LoginContainerActivity.newIntent(getContext());
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
-
-        viewModel.getNoConnection().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                binding.progressBar.setVisibility(View.GONE);
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(s);
-                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-            }
-        });
-
-        viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
-                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-            }
-        });
-
-        viewModel.getAttachFileClicked().observe(getViewLifecycleOwner(), new Observer<CustomerSupportInfo>() {
-            @Override
-            public void onChanged(CustomerSupportInfo customerSupportInfo) {
-                AttachSupportHistoryDialogFragment fragment = AttachSupportHistoryDialogFragment.newInstance(
-                        customerSupportInfo.getCustomerID(), customerSupportInfo.getCustomerSupportID());
-                fragment.show(getParentFragmentManager(), AttachSupportHistoryDialogFragment.TAG);
-            }
-        });
-
-        viewModel.getRequestPermissionSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, 6);
-            }
-        });
-
-        viewModel.getCustomerSupportInfoAdapterSeeDocumentClickedSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<CustomerSupportInfo>() {
-            @Override
-            public void onChanged(CustomerSupportInfo customerSupportInfo) {
-                Intent intent = ImageListContainerActivity.newIntent(getContext(), customerSupportInfo.getCustomerID(), customerSupportInfo.getCustomerSupportID(), 0, 0);
-                startActivity(intent);
-            }
-        });
+        setObserver();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 6:
-                if (grantResults == null || grantResults.length == 0) {
-                    return;
-                }
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    viewModel.getAllowPermissionSingleLiveEvent().setValue(true);
-                }
-        }
-    }
 
     private void initRecyclerView() {
         binding.recyclerViewSupportHistory.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -176,18 +94,97 @@ public class SupportHistoryFragment extends Fragment {
                 DividerItemDecoration.VERTICAL));
     }
 
-    private void setupAdapter(CustomerSupportInfo[] customerSupportInfos) {
+
+    private void setObserver() {
+        viewModel.getCustomerSupportResult()
+                .observe(getViewLifecycleOwner(), new Observer<CustomerSupportResult>() {
+                    @Override
+                    public void onChanged(CustomerSupportResult customerSupportResult) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        binding.recyclerViewSupportHistory.setVisibility(View.VISIBLE);
+
+                        StringBuilder stringBuilder = new StringBuilder();
+                        String listSize = String.valueOf(customerSupportResult.getCustomerSupports().length);
+
+                        for (int i = 0; i < listSize.length(); i++) {
+                            stringBuilder.append((char) ((int) listSize.charAt(i) - 48 + 1632));
+                        }
+
+
+                        binding.txtCount.setText("تعداد پشتیبانی ها: " + stringBuilder.toString());
+                        setupAdapter(customerSupportResult.getCustomerSupports());
+                    }
+                });
+
+        viewModel.getErrorCustomerSupportResult()
+                .observe(getViewLifecycleOwner(), new Observer<String>() {
+                    @Override
+                    public void onChanged(String error) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
+                        fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+                    }
+                });
+
+        viewModel.getNoConnection().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                binding.progressBar.setVisibility(View.GONE);
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getTimeoutExceptionHappenSingleLiveEvent()
+                .observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean isTimeOutExceptionHappen) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        ErrorDialogFragment fragment = ErrorDialogFragment
+                                .newInstance("اتصال به اینترنت با خطا مواجه شد");
+                        fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+                    }
+                });
+
+        viewModel.getDangerousUserSingleLiveEvent()
+                .observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean isDangerousUser) {
+                        SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
+                        SipSupportSharedPreferences.setUserFullName(getContext(), null);
+                        SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
+                        SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                        SipSupportSharedPreferences.setCustomerTel(getContext(), null);
+                        SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
+                        Intent intent = LoginContainerActivity.newIntent(getContext());
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                });
+
+        viewModel.getCustomerSupportInfoAdapterSeeDocumentClickedSingleLiveEvent()
+                .observe(getViewLifecycleOwner(), new Observer<CustomerSupportInfo>() {
+                    @Override
+                    public void onChanged(CustomerSupportInfo customerSupportInfo) {
+                        Intent intent = ImageListContainerActivity.newIntent(
+                                getContext(),
+                                customerSupportInfo.getCustomerID(),
+                                customerSupportInfo.getCustomerSupportID(),
+                                0,
+                                0);
+                        startActivity(intent);
+                    }
+                });
+    }
+
+
+    private void setupAdapter(CustomerSupportInfo[] customerSupportInfoArray) {
         List<CustomerSupportInfo> customerSupportInfoList = new ArrayList<>();
-        for (CustomerSupportInfo customerSupportInfo : customerSupportInfos) {
+        for (CustomerSupportInfo customerSupportInfo : customerSupportInfoArray) {
             customerSupportInfoList.add(customerSupportInfo);
         }
-        CustomerSupportInfoAdapter adapter = new CustomerSupportInfoAdapter(getContext(), customerSupportInfoList, viewModel);
+        CustomerSupportInfoAdapter adapter = new CustomerSupportInfoAdapter(
+                getContext(), customerSupportInfoList, viewModel);
         binding.recyclerViewSupportHistory.setAdapter(adapter);
     }
-
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolBar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
-    }
-
 }

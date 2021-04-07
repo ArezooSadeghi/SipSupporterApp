@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sipsupporterapp.R;
@@ -24,10 +22,11 @@ import com.example.sipsupporterapp.view.activity.SupportHistoryContainerActivity
 import com.example.sipsupporterapp.viewmodel.CustomerUsersViewModel;
 
 public class ItemClickedFragment extends Fragment {
-
     private FragmentItemClickedBinding binding;
-    private int customerID;
     private CustomerUsersViewModel viewModel;
+
+    private int customerID;
+
     private static final String ARGS_CUSTOMER_ID = "customerID";
 
     public static ItemClickedFragment newInstance(int customerID) {
@@ -38,6 +37,7 @@ public class ItemClickedFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +45,7 @@ public class ItemClickedFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(CustomerUsersViewModel.class);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,8 +57,6 @@ public class ItemClickedFragment extends Fragment {
                 container,
                 false);
 
-        initToolbar();
-
         binding.txtUserName.setText(SipSupportSharedPreferences.getUserFullName(getContext()));
         binding.txtCustomerName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
 
@@ -65,6 +64,13 @@ public class ItemClickedFragment extends Fragment {
 
         return binding.getRoot();
     }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
 
     private void setListener() {
         binding.btnHistorySupport.setOnClickListener(new View.OnClickListener() {
@@ -106,21 +112,5 @@ public class ItemClickedFragment extends Fragment {
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        viewModel.getSuccessfulRegisterItemClickedSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isSuccessfulRegister) {
-                getActivity().finish();
-            }
-        });
-    }
-
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolBar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
     }
 }

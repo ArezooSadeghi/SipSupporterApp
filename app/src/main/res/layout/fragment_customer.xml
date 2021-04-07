@@ -32,6 +32,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:fontFamily="@font/iranyekanwebregular"
                     android:textColor="@color/black"
                     android:textDirection="rtl"
@@ -74,6 +76,7 @@
             <ProgressBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_gravity="center" />
 
         </FrameLayout>

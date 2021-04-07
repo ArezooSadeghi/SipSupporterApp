@@ -17,8 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SipSupporterApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.activity.ImageListContainerActivity"></activity>
-        <activity android:name=".view.activity.GalleryProductsContainerActivity" />
+        <activity
+            android:name=".view.activity.ImageListContainerActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".view.activity.GalleryProductsContainerActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.GalleryContainerActivity"
             android:screenOrientation="portrait" />
@@ -42,6 +46,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.CustomerContainerActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.LoginContainerActivity"

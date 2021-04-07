@@ -71,6 +71,8 @@ public class RegisterProductViewModel extends AndroidViewModel {
 
     private SingleLiveEvent<CustomerProducts> mProductsAdapterSeeDocumentsClickedSingleLiveEvent = new SingleLiveEvent<>();
 
+    private SingleLiveEvent<Boolean> dangerousUserSingleLiveEvent;
+
     public RegisterProductViewModel(@NonNull Application application) {
         super(application);
         repository = SipSupportRepository.getInstance(getApplication());
@@ -97,6 +99,8 @@ public class RegisterProductViewModel extends AndroidViewModel {
         errorAttachResultSingleLiveEvent = repository.getErrorAttachResultSingleLiveEvent();
 
         noConnection = repository.getNoConnection();
+
+        dangerousUserSingleLiveEvent = repository.getDangerousUserSingleLiveEvent();
 
     }
 
@@ -142,6 +146,10 @@ public class RegisterProductViewModel extends AndroidViewModel {
 
     public void getSipSupportServiceGetProductResult(String baseUrl) {
         repository.getSipSupportServiceGetProductResult(baseUrl);
+    }
+
+    public SingleLiveEvent<Boolean> getDangerousUserSingleLiveEvent() {
+        return dangerousUserSingleLiveEvent;
     }
 
     public SingleLiveEvent<CustomerProductResult> getPostCustomerProductsSingleLiveEvent() {

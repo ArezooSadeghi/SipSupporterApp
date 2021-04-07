@@ -1,9 +1,9 @@
 package com.example.sipsupporterapp.view.fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +24,7 @@ import com.example.sipsupporterapp.model.AttachInfo;
 import com.example.sipsupporterapp.model.AttachResult;
 import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
+import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
 import com.example.sipsupporterapp.viewmodel.GalleryViewModel;
 
 import java.util.ArrayList;
@@ -145,6 +146,20 @@ public class GalleryFragment extends Fragment {
                 binding.progressBarLoading.setVisibility(View.GONE);
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getDangerousUserSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isDangerousUser) {
+                SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
+                SipSupportSharedPreferences.setUserFullName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
+                SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerTel(getContext(), null);
+                Intent intent = LoginContainerActivity.newIntent(getContext());
+                startActivity(intent);
+                getActivity().finish();
             }
         });
 

@@ -30,6 +30,8 @@ public class GalleryViewModel extends AndroidViewModel {
     private SingleLiveEvent<AttachResult> getAttachmentFilesViaAttachIDSingleLiveEvent;
     private SingleLiveEvent<String> getErrorAttachmentFilesViaAttachIDSingleLiveEvent;
 
+    private SingleLiveEvent<Boolean> dangerousUserSingleLiveEvent;
+
     public GalleryViewModel(@NonNull Application application) {
         super(application);
         repository = SipSupportRepository.getInstance(getApplication());
@@ -41,6 +43,8 @@ public class GalleryViewModel extends AndroidViewModel {
         errorAttachResultSingleLiveEvent = repository.getErrorAttachResultSingleLiveEvent();
         getAttachmentFilesViaAttachIDSingleLiveEvent = repository.getGetAttachmentFilesViaAttachIDSingleLiveEvent();
         getErrorAttachmentFilesViaAttachIDSingleLiveEvent = repository.getGetErrorAttachmentFilesViaAttachIDSingleLiveEvent();
+
+        dangerousUserSingleLiveEvent = repository.getDangerousUserSingleLiveEvent();
     }
 
     public SingleLiveEvent<AttachResult> getGetAttachmentFilesViaCustomerPaymentIDSingleLiveEvent() {
@@ -97,6 +101,10 @@ public class GalleryViewModel extends AndroidViewModel {
 
     public SingleLiveEvent<AttachInfo> getPhotoClickedSingleLiveEvent() {
         return photoClickedSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<Boolean> getDangerousUserSingleLiveEvent() {
+        return dangerousUserSingleLiveEvent;
     }
 
     public SingleLiveEvent<AttachResult> getGetAttachmentFilesViaAttachIDSingleLiveEvent() {

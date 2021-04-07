@@ -15,6 +15,7 @@ public class SipSupportSharedPreferences {
     private static final String CUSTOMER_TEL = "customerTel";
     private static final String DATE = "date";
 
+
     public static void setUserFullName(Context context, String userFullName) {
         SharedPreferences preferences = getSharedPreferences(context);
         preferences.edit().putString(USER_FULL_NAME, userFullName).commit();

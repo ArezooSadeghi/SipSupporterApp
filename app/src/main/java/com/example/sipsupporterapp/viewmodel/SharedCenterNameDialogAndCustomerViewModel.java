@@ -25,6 +25,7 @@ public class SharedCenterNameDialogAndCustomerViewModel extends AndroidViewModel
     private SingleLiveEvent<Boolean> noConnectivityExceptionSingleLiveEvent;
     private SingleLiveEvent<Boolean> dangerousUserSingleLiveEvent;
     private SingleLiveEvent<String> errorSingleLiveEvent;
+    private SingleLiveEvent<String> noConnection;
     private SingleLiveEvent<DateResult> dateResultSingleLiveEvent;
 
 
@@ -39,6 +40,7 @@ public class SharedCenterNameDialogAndCustomerViewModel extends AndroidViewModel
         dangerousUserSingleLiveEvent = repository.getDangerousUserSingleLiveEvent();
         errorSingleLiveEvent = repository.getErrorSingleLiveEvent();
         dateResultSingleLiveEvent = repository.getDateResultSingleLiveEvent();
+        noConnection = repository.getNoConnection();
     }
 
     public SingleLiveEvent<CustomerResult> getCustomerResultSingleLiveEvent() {
@@ -91,6 +93,10 @@ public class SharedCenterNameDialogAndCustomerViewModel extends AndroidViewModel
 
     public SingleLiveEvent<DateResult> getDateResultSingleLiveEvent() {
         return dateResultSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<String> getNoConnection() {
+        return noConnection;
     }
 
     public void getSipSupportServiceGetDateResult(String baseUrl) {

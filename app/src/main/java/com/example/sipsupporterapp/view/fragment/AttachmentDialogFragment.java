@@ -184,6 +184,7 @@ public class AttachmentDialogFragment extends DialogFragment {
             @Override
             public void onChanged(AttachResult attachResult) {
                 mBinding.progressBarLoading.setVisibility(View.GONE);
+                mViewModel.getUpdateImageListSingleLiveEvent().setValue(attachResult);
                 SuccessAttachmentDialogFragment fragment = SuccessAttachmentDialogFragment.newInstance();
                 fragment.show(getParentFragmentManager(), SuccessAttachmentDialogFragment.TAG);
             }
@@ -221,10 +222,10 @@ public class AttachmentDialogFragment extends DialogFragment {
             public void onChanged(Boolean isDangerousUser) {
                 SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
                 SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
+                SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
                 SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerTel(getContext(), null);
+                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
                 Intent intent = LoginContainerActivity.newIntent(getContext());
                 startActivity(intent);
                 getActivity().finish();

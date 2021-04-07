@@ -3,18 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/item_edit"
-        android:icon="@drawable/new_edit"
-        android:title="ویرایش"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/item_delete"
-        android:icon="@drawable/new_delete"
-        android:title="حذف"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/item_see_documents"
         android:title="مشاهده مستندات"
         app:showAsAction="never" />

@@ -30,9 +30,11 @@ import java.util.List;
 
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
-    private String value;
-    private IPAddressListDialogFragment fragment;
     private SharedLoginAndAddAndEditIPAddressDialogAndIPAddressListDialogViewModel viewModel;
+
+    private String spinnerValue;
+    private IPAddressListDialogFragment fragment;
+
 
     public static LoginFragment newInstance() {
         LoginFragment fragment = new LoginFragment();
@@ -41,11 +43,13 @@ public class LoginFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(SharedLoginAndAddAndEditIPAddressDialogAndIPAddressListDialogViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity())
+                .get(SharedLoginAndAddAndEditIPAddressDialogAndIPAddressListDialogViewModel.class);
 
         if (viewModel.getServerDataList().size() == 0) {
             EnterIPAddressDialogFragment fragment = EnterIPAddressDialogFragment.newInstance();
@@ -78,14 +82,6 @@ public class LoginFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void setItemSelected() {
-        binding.spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                value = (String) item;
-            }
-        });
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -93,81 +89,31 @@ public class LoginFragment extends Fragment {
         setObserver();
     }
 
-    private void setListener() {
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userName = binding.edTextUserName.getText().toString();
-                String password = binding.edTextPassword.getText().toString();
-
-                UserLoginParameter userLoginParameter = new UserLoginParameter(userName, password);
-
-                if (value != null) {
-                    ServerData serverData = viewModel.getServerData(value);
-                    viewModel.getSipSupportServicePostUserLoginParameter(serverData.getIpAddress() + ":" + serverData.getPort());
-                    viewModel.fetchUserResult(userLoginParameter);
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                } else {
-                    EnterIPAddressDialogFragment fragment = EnterIPAddressDialogFragment.newInstance();
-                    fragment.show(getParentFragmentManager(), EnterIPAddressDialogFragment.TAG);
-                }
-            }
-        });
-
-        binding.imgMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragment = IPAddressListDialogFragment.newInstance();
-                fragment.show(getParentFragmentManager(), IPAddressListDialogFragment.TAG);
-            }
-        });
-    }
 
     private void setObserver() {
-        viewModel.getUserResultSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<UserResult>() {
-            @Override
-            public void onChanged(UserResult userResult) {
-                SipSupportSharedPreferences.setUserName(getContext(), binding.edTextUserName.getText().toString());
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), value);
-                binding.progressBar.setVisibility(View.GONE);
-                UserInfo[] userInfoArray = userResult.getUsers();
-                if (userInfoArray.length != 0) {
-                    SipSupportSharedPreferences.setUserLoginKey(getContext(), userInfoArray[0].getUserLoginKey());
-                    SipSupportSharedPreferences.setUserFullName(getContext(), userInfoArray[0].getUserFullName());
+        viewModel.getUserResultSingleLiveEvent().observe(
+                getViewLifecycleOwner(), new Observer<UserResult>() {
+                    @Override
+                    public void onChanged(UserResult userResult) {
+                        SipSupportSharedPreferences
+                                .setUserName(getContext(), binding.edTextUserName.getText().toString());
+                        SipSupportSharedPreferences.setLastValueSpinner(getContext(), spinnerValue);
+                        binding.progressBar.setVisibility(View.GONE);
+                        UserInfo[] userInfoArray = userResult.getUsers();
+                        if (userInfoArray.length != 0) {
+                            SipSupportSharedPreferences
+                                    .setUserLoginKey(getContext(), userInfoArray[0].getUserLoginKey());
+                            SipSupportSharedPreferences
+                                    .setUserFullName(getContext(), userInfoArray[0].getUserFullName());
 
-                    Intent intent = CustomerContainerActivity.newIntent(getContext());
-                    startActivity(intent);
-                    getActivity().finish();
-                }
-            }
-        });
+                            Intent intent = CustomerContainerActivity.newIntent(getContext());
+                            startActivity(intent);
+                            getActivity().finish();
+                        }
+                    }
+                });
 
-        viewModel.getInsertSpinnerSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isInsert) {
-                setupSpinner();
-            }
-        });
-
-        viewModel.getDeleteSpinnerSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<ServerData>() {
-            @Override
-            public void onChanged(ServerData serverData) {
-                if (viewModel.getServerDataList().size() == 0) {
-                    SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                    setupSpinner();
-                    fragment.dismiss();
-                    binding.edTextPassword.setText("");
-                    binding.edTextUserName.setText("");
-                    EnterIPAddressDialogFragment fragment = EnterIPAddressDialogFragment.newInstance();
-                    fragment.show(getChildFragmentManager(), EnterIPAddressDialogFragment.TAG);
-                } else {
-                    SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                    setupSpinner();
-                }
-            }
-        });
-
-        viewModel.getWrongIpAddressSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
+        viewModel.getErrorUserResult().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 binding.progressBar.setVisibility(View.GONE);
@@ -176,48 +122,80 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        viewModel.getErrorUserResult().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String errorUserResult) {
-                binding.progressBar.setVisibility(View.GONE);
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(errorUserResult);
-                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-            }
-        });
-
         viewModel.getNoConnection().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
-            public void onChanged(String noConnectionMessage) {
+            public void onChanged(String error) {
                 binding.progressBar.setVisibility(View.GONE);
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(noConnectionMessage);
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
         });
 
-        viewModel.getDangerousUserSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
-                SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
-                SipSupportSharedPreferences.setCustomerName(getContext(), null);
-                Intent intent = LoginContainerActivity.newIntent(getContext());
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
+        viewModel.getTimeoutExceptionHappenSingleLiveEvent()
+                .observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean isTimeOutExceptionHappen) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        ErrorDialogFragment fragment = ErrorDialogFragment
+                                .newInstance("اتصال به اینترنت با خطا مواجه شد");
+                        fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+                    }
+                });
 
-        viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                binding.progressBar.setVisibility(View.GONE);
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
-                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-            }
-        });
+        viewModel.getWrongIpAddressSingleLiveEvent()
+                .observe(getViewLifecycleOwner(), new Observer<String>() {
+                    @Override
+                    public void onChanged(String error) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
+                        fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+                    }
+                });
+
+        viewModel.getDangerousUserSingleLiveEvent()
+                .observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean isDangerousUser) {
+                        SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
+                        SipSupportSharedPreferences.setUserFullName(getContext(), null);
+                        SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
+                        SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                        SipSupportSharedPreferences.setCustomerTel(getContext(), null);
+                        SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
+                        Intent intent = LoginContainerActivity.newIntent(getContext());
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                });
+
+        viewModel.getInsertSpinnerSingleLiveEvent()
+                .observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean isInsert) {
+                        setupSpinner();
+                    }
+                });
+
+        viewModel.getDeleteSpinnerSingleLiveEvent()
+                .observe(getViewLifecycleOwner(), new Observer<ServerData>() {
+                    @Override
+                    public void onChanged(ServerData serverData) {
+                        if (viewModel.getServerDataList().size() == 0) {
+                            SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
+                            setupSpinner();
+                            fragment.dismiss();
+                            binding.edTextPassword.setText("");
+                            binding.edTextUserName.setText("");
+                            EnterIPAddressDialogFragment fragment = EnterIPAddressDialogFragment.newInstance();
+                            fragment.show(getChildFragmentManager(), EnterIPAddressDialogFragment.TAG);
+                        } else {
+                            SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
+                            setupSpinner();
+                        }
+                    }
+                });
     }
+
 
     private void setupSpinner() {
         String lastValueSpinner = SipSupportSharedPreferences.getLastValueSpinner(getContext());
@@ -242,7 +220,46 @@ public class LoginFragment extends Fragment {
             binding.spinner.setItems(centerNameList);
         }
         if (binding.spinner.getItems().size() > 0) {
-            value = (String) binding.spinner.getItems().get(0);
+            spinnerValue = (String) binding.spinner.getItems().get(0);
         }
+    }
+
+
+    private void setListener() {
+        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userName = binding.edTextUserName.getText().toString();
+                String password = binding.edTextPassword.getText().toString();
+
+                UserLoginParameter userLoginParameter = new UserLoginParameter(userName, password);
+
+                if (spinnerValue != null) {
+                    ServerData serverData = viewModel.getServerData(spinnerValue);
+                    viewModel.getSipSupportServicePostUserLoginParameter(
+                            serverData.getIpAddress() + ":" + serverData.getPort());
+                    viewModel.fetchUserResult(userLoginParameter);
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        binding.imgMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragment = IPAddressListDialogFragment.newInstance();
+                fragment.show(getParentFragmentManager(), IPAddressListDialogFragment.TAG);
+            }
+        });
+    }
+
+
+    private void setItemSelected() {
+        binding.spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                spinnerValue = (String) item;
+            }
+        });
     }
 }

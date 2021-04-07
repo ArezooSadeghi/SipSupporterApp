@@ -119,9 +119,9 @@ public class CustomerSupportInfoAdapter extends RecyclerView.Adapter<CustomerSup
             String customerSupportID = String.valueOf(customerSupportInfo.getCustomerSupportID());
             binding.txtCustomerSupportID.setText(customerSupportID);
 
-            binding.txtCustomerUserName.setText(customerSupportInfo.getCustomerUserName());
+            /*binding.txtCustomerUserName.setText(customerSupportInfo.getCustomerUserName());*/
             binding.txtRegTime.setText(customerSupportInfo.getRegTime());
-            binding.txtUserFullName.setText(customerSupportInfo.getUserFullName());
+            /*binding.txtUserFullName.setText(customerSupportInfo.getUserFullName() + ":");*/
         }
     }
 }

@@ -28,6 +28,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:fontFamily="@font/iranyekanwebregular"
                     android:textColor="@color/black"
                     android:textDirection="rtl"
@@ -42,6 +44,8 @@
                     android:fontFamily="@font/robotobold"
                     android:textColor="@color/black"
                     android:textDirection="rtl"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textSize="12sp" />
 
             </FrameLayout>

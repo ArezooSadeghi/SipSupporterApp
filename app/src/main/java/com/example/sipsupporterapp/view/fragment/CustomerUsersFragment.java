@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -34,6 +33,7 @@ import java.util.List;
 public class CustomerUsersFragment extends Fragment {
     private FragmentCustomerUsersBinding binding;
     private CustomerUsersViewModel viewModel;
+
     private int customerID;
     private String date;
 
@@ -48,6 +48,7 @@ public class CustomerUsersFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +60,7 @@ public class CustomerUsersFragment extends Fragment {
         viewModel.fetchDateResult(SipSupportSharedPreferences.getUserLoginKey(getContext()));
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,10 +71,9 @@ public class CustomerUsersFragment extends Fragment {
                 container,
                 false);
 
-        initToolbar();
-        initRecyclerView();
-
         binding.txtCustomerName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
+
+        initRecyclerView();
 
         ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
         viewModel.getSipSupportServiceCustomerUserResult(serverData.getIpAddress() + ":" + serverData.getPort());
@@ -81,11 +82,13 @@ public class CustomerUsersFragment extends Fragment {
         return binding.getRoot();
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setObserver();
     }
+
 
     private void initRecyclerView() {
         binding.recyclerViewCustomerUsers.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -94,10 +97,6 @@ public class CustomerUsersFragment extends Fragment {
                 DividerItemDecoration.VERTICAL));
     }
 
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolBar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
-    }
 
     private void setObserver() {
         viewModel.getCustomerUserResultSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<CustomerUserResult>() {
@@ -117,14 +116,6 @@ public class CustomerUsersFragment extends Fragment {
             }
         });
 
-        viewModel.getItemClicked().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer customerID) {
-                RegisterSupportDialogFragment fragment = RegisterSupportDialogFragment.newInstance(customerID);
-                fragment.show(getActivity().getSupportFragmentManager(), RegisterSupportDialogFragment.TAG);
-            }
-        });
-
         viewModel.getErrorCustomerUserResultSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String error) {
@@ -134,18 +125,44 @@ public class CustomerUsersFragment extends Fragment {
             }
         });
 
+        viewModel.getNoConnection().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                binding.progressBar.setVisibility(View.GONE);
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isTimeOutExceptionHappen) {
+                binding.progressBar.setVisibility(View.GONE);
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
         viewModel.getDangerousUserSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
                 SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
+                SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
                 SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerTel(getContext(), null);
+                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
                 Intent intent = LoginContainerActivity.newIntent(getContext());
                 startActivity(intent);
                 getActivity().finish();
+            }
+        });
+
+        viewModel.getItemClicked().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer customerID) {
+                RegisterSupportDialogFragment fragment = RegisterSupportDialogFragment.newInstance(customerID);
+                fragment.show(getActivity().getSupportFragmentManager(), RegisterSupportDialogFragment.TAG);
             }
         });
 
@@ -153,23 +170,6 @@ public class CustomerUsersFragment extends Fragment {
             @Override
             public void onChanged(DateResult dateResult) {
                 date = dateResult.getDate();
-            }
-        });
-
-        viewModel.getNoConnection().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                binding.progressBar.setVisibility(View.GONE);
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(s);
-                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-            }
-        });
-
-        viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
-                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
         });
 
@@ -184,9 +184,9 @@ public class CustomerUsersFragment extends Fragment {
         });
     }
 
-    private void setupAdapter(CustomerUsers[] customerUsers) {
+    private void setupAdapter(CustomerUsers[] customerUsersArray) {
         List<CustomerUsers> customerUsersList = new ArrayList<>();
-        for (CustomerUsers customerUsers1 : customerUsers) {
+        for (CustomerUsers customerUsers1 : customerUsersArray) {
             customerUsersList.add(customerUsers1);
         }
 

@@ -2,6 +2,7 @@ package com.example.sipsupporterapp.view.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,6 +25,7 @@ import com.example.sipsupporterapp.model.CustomerPaymentInfo;
 import com.example.sipsupporterapp.model.CustomerPaymentResult;
 import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
+import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
 import com.example.sipsupporterapp.viewmodel.DepositAmountsViewModel;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
@@ -39,6 +41,7 @@ import java.util.Map;
 public class AddEditCustomerPaymentDialogFragment extends DialogFragment {
     private FragmentAddEditCustomerPaymentDialogBinding binding;
     private DepositAmountsViewModel viewModel;
+
     private String bankName, description, value;
     private long price;
     private int datePayment, customerID, customerPaymentID;
@@ -55,7 +58,14 @@ public class AddEditCustomerPaymentDialogFragment extends DialogFragment {
 
     public static final String TAG = AddEditCustomerPaymentDialogFragment.class.getSimpleName();
 
-    public static AddEditCustomerPaymentDialogFragment newInstance(String bankName, String description, long price, int datePayment, int customerID, boolean isAdd, int customerPaymentID) {
+    public static AddEditCustomerPaymentDialogFragment newInstance(
+            String bankName,
+            String description,
+            long price,
+            int datePayment,
+            int customerID,
+            boolean isAdd,
+            int customerPaymentID) {
         AddEditCustomerPaymentDialogFragment fragment = new AddEditCustomerPaymentDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARGS_BANK_NAME, bankName);
@@ -83,13 +93,13 @@ public class AddEditCustomerPaymentDialogFragment extends DialogFragment {
         isAdd = getArguments().getBoolean(ARGS_IS_ADD);
         customerPaymentID = getArguments().getInt(ARGS_CUSTOMER_PAYMENT_ID);
 
-
         ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
         viewModel.getSipSupportServiceGetBankAccountResult(serverData.getIpAddress() + ":" + serverData.getPort());
         viewModel.fetchBankAccounts(SipSupportSharedPreferences.getUserLoginKey(getContext()));
 
         setObserver();
     }
+
 
     @NonNull
     @Override
@@ -182,6 +192,8 @@ public class AddEditCustomerPaymentDialogFragment extends DialogFragment {
             String day = date.substring(6);
             String dateFormat = year + "/" + month + "/" + day;
             binding.btnDepositDate.setText(dateFormat);
+        } else {
+            binding.btnDepositDate.setText(SipSupportSharedPreferences.getDate(getContext()));
         }
 
         setListener();
@@ -250,15 +262,7 @@ public class AddEditCustomerPaymentDialogFragment extends DialogFragment {
             }
         });
 
-        viewModel.getAddCustomerPaymentsSingleLiveEvent().observe(this, new Observer<CustomerPaymentResult>() {
-            @Override
-            public void onChanged(CustomerPaymentResult customerPaymentResult) {
-                SuccessfulAddCustomerPaymentDialogFragment fragment = SuccessfulAddCustomerPaymentDialogFragment.newInstance();
-                fragment.show(getParentFragmentManager(), SuccessfulAddCustomerPaymentDialogFragment.TAG);
-            }
-        });
-
-        viewModel.getErrorAddCustomerPaymentSingleLiveEvent().observe(this, new Observer<String>() {
+        viewModel.getErrorBankAccountResultSingleLiveEvent().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String error) {
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
@@ -276,8 +280,39 @@ public class AddEditCustomerPaymentDialogFragment extends DialogFragment {
 
         viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean isErrorHappen) {
+            public void onChanged(Boolean isTimeOutExceptionHappen) {
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getDangerousUserSingleLiveEvent().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isDangerousUser) {
+                SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
+                SipSupportSharedPreferences.setUserFullName(getContext(), null);
+                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
+                SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
+                SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerTel(getContext(), null);
+                Intent intent = LoginContainerActivity.newIntent(getContext());
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+        viewModel.getAddCustomerPaymentsSingleLiveEvent().observe(this, new Observer<CustomerPaymentResult>() {
+            @Override
+            public void onChanged(CustomerPaymentResult customerPaymentResult) {
+                SuccessfulAddCustomerPaymentDialogFragment fragment = SuccessfulAddCustomerPaymentDialogFragment.newInstance();
+                fragment.show(getParentFragmentManager(), SuccessfulAddCustomerPaymentDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getErrorAddCustomerPaymentSingleLiveEvent().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
         });

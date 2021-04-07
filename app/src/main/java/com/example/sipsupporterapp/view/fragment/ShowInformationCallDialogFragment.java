@@ -27,11 +27,13 @@ public class ShowInformationCallDialogFragment extends DialogFragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
+
 
     @NonNull
     @Override
@@ -41,15 +43,11 @@ public class ShowInformationCallDialogFragment extends DialogFragment {
                 R.layout.fragment_show_information_call_dialog,
                 null,
                 false);
-        if (!SipSupportSharedPreferences.getCustomerTel(getContext()).isEmpty()) {
+
+        if (SipSupportSharedPreferences.getCustomerTel(getContext()) != null) {
 
             binding.txtCallInformation.setText(SipSupportSharedPreferences.getCustomerTel(getContext()));
-            binding.imgClose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
+            setListener();
 
             AlertDialog dialog = new AlertDialog
                     .Builder(getContext())
@@ -63,12 +61,7 @@ public class ShowInformationCallDialogFragment extends DialogFragment {
         } else {
 
             binding.txtCallInformation.setText("اطلاعات تماس درج نشده است");
-            binding.imgClose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
+            setListener();
 
             AlertDialog dialog = new AlertDialog
                     .Builder(getContext())
@@ -81,5 +74,15 @@ public class ShowInformationCallDialogFragment extends DialogFragment {
             return dialog;
         }
 
+    }
+
+
+    private void setListener() {
+        binding.imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 }

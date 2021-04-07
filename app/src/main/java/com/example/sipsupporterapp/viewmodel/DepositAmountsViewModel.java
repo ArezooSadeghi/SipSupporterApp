@@ -65,6 +65,8 @@ public class DepositAmountsViewModel extends AndroidViewModel {
     private SingleLiveEvent<CustomerPaymentResult> editCustomerPaymentsSingleLiveEvent;
     private SingleLiveEvent<String> errorEditCustomerPaymentSingleLiveEvent;
 
+    private SingleLiveEvent<Boolean> dangerousUserSingleLiveEvent;
+
 
     public DepositAmountsViewModel(@NonNull Application application) {
         super(application);
@@ -93,6 +95,8 @@ public class DepositAmountsViewModel extends AndroidViewModel {
 
         editCustomerPaymentsSingleLiveEvent = repository.getEditCustomerPaymentsSingleLiveEvent();
         errorEditCustomerPaymentSingleLiveEvent = repository.getErrorEditCustomerPaymentSingleLiveEvent();
+
+        dangerousUserSingleLiveEvent = repository.getDangerousUserSingleLiveEvent();
     }
 
     public SingleLiveEvent<CustomerPaymentResult> getCustomerPaymentResultSingleLiveEvent() {
@@ -157,6 +161,10 @@ public class DepositAmountsViewModel extends AndroidViewModel {
 
     public SingleLiveEvent<Boolean> getDismissSuccessfulAddCustomerPaymentsSingleLiveEvent() {
         return dismissSuccessfulAddCustomerPaymentsSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<Boolean> getDangerousUserSingleLiveEvent() {
+        return dangerousUserSingleLiveEvent;
     }
 
     public ServerData getServerData(String centerName) {

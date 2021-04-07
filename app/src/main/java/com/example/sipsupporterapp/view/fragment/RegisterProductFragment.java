@@ -1,6 +1,7 @@
 package com.example.sipsupporterapp.view.fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,6 +25,7 @@ import com.example.sipsupporterapp.model.ProductInfo;
 import com.example.sipsupporterapp.model.ProductResult;
 import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
+import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
 import com.example.sipsupporterapp.viewmodel.RegisterProductViewModel;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.mohamadamin.persianmaterialdatetimepicker.date.DatePickerDialog;
@@ -372,6 +374,29 @@ public class RegisterProductFragment extends DialogFragment {
             public void onChanged(String noConnection) {
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(noConnection);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isTimeOutExceptionHappen) {
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("دسترسی به اینترنت با خطا مواجه شد");
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getDangerousUserSingleLiveEvent().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isDangerousUser) {
+                SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
+                SipSupportSharedPreferences.setUserFullName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
+                SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                SipSupportSharedPreferences.setCustomerTel(getContext(), null);
+                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
+                Intent intent = LoginContainerActivity.newIntent(getContext());
+                startActivity(intent);
+                getActivity().finish();
             }
         });
     }

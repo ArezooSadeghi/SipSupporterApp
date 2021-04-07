@@ -2,9 +2,7 @@ package com.example.sipsupporterapp.view.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -12,14 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.FragmentAddAndEditIPAddressDialogBinding;
 import com.example.sipsupporterapp.model.ServerData;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
-import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
 import com.example.sipsupporterapp.viewmodel.SharedLoginAndAddAndEditIPAddressDialogAndIPAddressListDialogViewModel;
 
 import java.util.List;
@@ -27,15 +23,19 @@ import java.util.List;
 public class AddAndEditIPAddressDialogFragment extends DialogFragment {
     private FragmentAddAndEditIPAddressDialogBinding binding;
     private SharedLoginAndAddAndEditIPAddressDialogAndIPAddressListDialogViewModel viewModel;
+
     private String centerName, ipAddress, port;
+    private boolean flag;
+
     private static final String ARGS_CENTER_NAME = "centerName";
     private static final String ARGS_IP_ADDRESS = "ipAddress";
     private static final String ARGS_PORT = "port";
-    private boolean flag;
+
     public static final String TAG = AddAndEditIPAddressDialogFragment.class.getSimpleName();
 
 
-    public static AddAndEditIPAddressDialogFragment newInstance(String centerName, String ipAddress, String port) {
+    public static AddAndEditIPAddressDialogFragment newInstance(
+            String centerName, String ipAddress, String port) {
         AddAndEditIPAddressDialogFragment fragment = new AddAndEditIPAddressDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARGS_CENTER_NAME, centerName);
@@ -54,36 +54,16 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
         ipAddress = getArguments().getString(ARGS_IP_ADDRESS);
         port = getArguments().getString(ARGS_PORT);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(SharedLoginAndAddAndEditIPAddressDialogAndIPAddressListDialogViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity())
+                .get(SharedLoginAndAddAndEditIPAddressDialogAndIPAddressListDialogViewModel.class);
 
-        viewModel.getDangerousUserSingleLiveEvent().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
-                SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
-                SipSupportSharedPreferences.setCustomerName(getContext(), null);
-                Intent intent = LoginContainerActivity.newIntent(getContext());
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
-
-        viewModel.getTimeoutExceptionHappenSingleLiveEvent().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
-                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-            }
-        });
     }
 
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
         binding = DataBindingUtil.inflate(LayoutInflater.from(
                 getContext()),
                 R.layout.fragment_add_and_edit_i_p_address_dialog,
@@ -108,6 +88,7 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
         return dialog;
     }
 
+
     private void setListener() {
         binding.fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,33 +96,43 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
                 flag = false;
                 String centerName = binding.edTextCenterName.getText().toString();
                 String ipAddress = binding.edTextIpAddress.getText().toString();
-                String port = binding.edTextPort.getText().toString().trim();
+                String port = binding.edTextPort.getText().toString();
 
                 if (centerName.isEmpty() || ipAddress.isEmpty() || port.isEmpty()) {
-                    ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("لطفا موارد خواسته شده را پر کنید");
+                    ErrorDialogFragment fragment = ErrorDialogFragment
+                            .newInstance("لطفا موارد خواسته شده را پر کنید");
                     fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
-                } else if (ipAddress.length() < 7 || !checkDot(ipAddress) || hasEnglishLetter(ipAddress) || hasEnglishLetter(port)) {
-                    ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("فرمت آدرس ip نادرست است");
+                } else if (ipAddress.length() < 7 || !hasThreeDots(ipAddress)
+                        || hasEnglishLetter(ipAddress) || hasEnglishLetter(port)) {
+                    ErrorDialogFragment fragment = ErrorDialogFragment
+                            .newInstance("فرمت آدرس ip نادرست است");
                     fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
                 } else {
                     List<ServerData> serverDataList = viewModel.getServerDataList();
                     if (serverDataList.size() > 0) {
-                        for (ServerData serverData1 : serverDataList) {
-                            if (serverData1.getCenterName().equals(centerName)) {
-                                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("نام مرکز تکراری می باشد");
+                        for (ServerData serverData : serverDataList) {
+                            if (serverData.getCenterName().equals(centerName)) {
+                                ErrorDialogFragment fragment = ErrorDialogFragment
+                                        .newInstance("نام مرکز تکراری می باشد");
                                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
                                 flag = true;
                             }
                         }
                     }
                     if (!flag) {
-                        String output = "";
-                        output = replace(ipAddress, output);
+                        String newIpAddress = convertPerToEn(ipAddress, "");
+                        String newPort = convertPerToEn(port, "");
 
-                        String newPort = "";
-                        newPort = replace(port, newPort);
+                        newIpAddress = newIpAddress.replaceAll(" ", "");
+                        newPort = newPort.replaceAll(" ", "");
 
-                        ServerData serverData = new ServerData(centerName, output, newPort);
+                        ServerData serverData = new ServerData(centerName, newIpAddress, newPort);
+
+                        if (serverData.getCenterName().equals(SipSupportSharedPreferences
+                                .getLastValueSpinner(getContext()))) {
+                            SipSupportSharedPreferences
+                                    .setLastValueSpinner(getContext(), serverData.getCenterName());
+                        }
 
                         viewModel.insertServerData(serverData);
 
@@ -154,7 +145,8 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
         });
     }
 
-    private String replace(String ipAddress, String output) {
+
+    private String convertPerToEn(String ipAddress, String output) {
         for (int i = 0; i < ipAddress.length(); i++) {
             if (ipAddress.charAt(i) == '۱') {
                 output += '1';
@@ -192,7 +184,8 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
         return output;
     }
 
-    private boolean checkDot(String ipAddress) {
+
+    private boolean hasThreeDots(String ipAddress) {
         int dotNumber = 0;
         char[] chars = ipAddress.toCharArray();
         for (Character character : chars) {
@@ -206,6 +199,7 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
             return false;
         }
     }
+
 
     private boolean hasEnglishLetter(String ipAddress) {
         String str = "";

@@ -28,6 +28,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:textSize="14sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:fontFamily="@font/iranyekanwebregular"
                     android:textColor="@color/black"  />
 

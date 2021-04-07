@@ -68,7 +68,8 @@ public class SipSupportRepository {
             sipSupportServiceGetDateResult, sipSupportServiceGetCustomerProductResult, sipSupportServicePostProductInfo, sipSupportServiceGetProductResult,
             sipSupportServicePostCustomerProducts, sipSupportServiceForGetProductInfo, sipSupportServiceForDeleteCustomerProduct, sipSupportServiceForEditCustomerProduct,
             sipSupportServiceAttach, sipSupportServiceCustomerPaymentResult, sipSupportServiceGetAttachmentFilesViaCustomerPaymentID, sipSupportServiceGetAttachmentFileViaAttachID,
-            sipSupporterServiceAddCustomerPayments, sipSupporterServiceDeleteCustomerPayments, sipSupporterServiceEditCustomerPayments, sipSupporterServiceGetBankAccountResult;
+            sipSupporterServiceAddCustomerPayments, sipSupporterServiceDeleteCustomerPayments, sipSupporterServiceEditCustomerPayments, sipSupporterServiceGetBankAccountResult,
+            sipSupportServiceGetAttachmentFilesViaCustomerProductID, sipSupportServiceGetAttachmentFilesViaCustomerSupportID;
     private static final String TAG = SipSupportRepository.class.getSimpleName();
 
     private SingleLiveEvent<CustomerResult> customerResultSingleLiveEvent = new SingleLiveEvent<>();
@@ -138,6 +139,15 @@ public class SipSupportRepository {
 
     private SingleLiveEvent<CustomerPaymentResult> editCustomerPaymentsSingleLiveEvent = new SingleLiveEvent<>();
     private SingleLiveEvent<String> errorEditCustomerPaymentSingleLiveEvent = new SingleLiveEvent<>();
+
+    private SingleLiveEvent<AttachResult> getAttachmentFilesViaCustomerProductIDSingleLiveEvent = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> getErrorAttachmentFilesViaCustomerProductIDSingleLiveEvent = new SingleLiveEvent<>();
+
+    private SingleLiveEvent<AttachResult> getAttachmentFilesViaCustomerSupportIDSingleLiveEvent = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> getErrorAttachmentFilesViaCustomerSupportIDSingleLiveEvent = new SingleLiveEvent<>();
+
+    private SingleLiveEvent<AttachResult> attachResultViaAttachIDSingleLiveEvent = new SingleLiveEvent<>();
+    private SingleLiveEvent<String> errorAttachResultViaAttachIDSingleLiveEvent = new SingleLiveEvent<>();
 
 
     private SipSupportRepository(Context context) {
@@ -312,6 +322,20 @@ public class SipSupportRepository {
         sipSupporterServiceGetBankAccountResult = RetrofitInstance
                 .getBankAccountResultRetrofitInstance(new TypeToken<CustomerPaymentResult>() {
                 }.getType(), new BankAccountResultDeserializer(), context).create(SipSupportService.class);
+    }
+
+    public void getSipSupportServiceGetAttachmentFilesViaCustomerProductID(String baseUrl) {
+        RetrofitInstance.getNewBaseUrl(baseUrl);
+        sipSupportServiceGetAttachmentFilesViaCustomerProductID = RetrofitInstance
+                .getAttachmentFilesViaCustomerProductIDRetrofitInstance(new TypeToken<AttachResult>() {
+                }.getType(), new AttachResultDeserializer(), context).create(SipSupportService.class);
+    }
+
+    public void getSipSupportServiceGetAttachmentFilesViaCustomerSupportID(String baseUrl) {
+        RetrofitInstance.getNewBaseUrl(baseUrl);
+        sipSupportServiceGetAttachmentFilesViaCustomerSupportID = RetrofitInstance
+                .getAttachmentFilesViaCustomerSupportIDRetrofitInstance(new TypeToken<AttachResult>() {
+                }.getType(), new AttachResultDeserializer(), context).create(SipSupportService.class);
     }
 
     public SingleLiveEvent<CustomerResult> getCustomerResultSingleLiveEvent() {
@@ -530,6 +554,30 @@ public class SipSupportRepository {
         return errorEditCustomerPaymentSingleLiveEvent;
     }
 
+    public SingleLiveEvent<AttachResult> getGetAttachmentFilesViaCustomerProductIDSingleLiveEvent() {
+        return getAttachmentFilesViaCustomerProductIDSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<String> getGetErrorAttachmentFilesViaCustomerProductIDSingleLiveEvent() {
+        return getErrorAttachmentFilesViaCustomerProductIDSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<AttachResult> getGetAttachmentFilesViaCustomerSupportIDSingleLiveEvent() {
+        return getAttachmentFilesViaCustomerSupportIDSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<String> getGetErrorAttachmentFilesViaCustomerSupportIDSingleLiveEvent() {
+        return getErrorAttachmentFilesViaCustomerSupportIDSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<AttachResult> getAttachResultViaAttachIDSingleLiveEvent() {
+        return attachResultViaAttachIDSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<String> getErrorAttachResultViaAttachIDSingleLiveEvent() {
+        return errorAttachResultViaAttachIDSingleLiveEvent;
+    }
+
     public void insertServerData(ServerData serverData) {
         ContentValues values = new ContentValues();
 
@@ -705,7 +753,7 @@ public class SipSupportRepository {
             @Override
             public void onFailure(Call<CustomerResult> call, Throwable t) {
                 if (t instanceof NoConnectivityException) {
-                    noConnectivityExceptionSingleLiveEvent.setValue(true);
+                    noConnection.setValue(t.getMessage());
                 } else if (t instanceof SocketTimeoutException) {
                     timeoutExceptionHappenSingleLiveEvent.setValue(true);
                 } else {
@@ -1543,6 +1591,126 @@ public class SipSupportRepository {
 
             @Override
             public void onFailure(Call<BankAccountResult> call, Throwable t) {
+                if (t instanceof NoConnectivityException) {
+                    noConnection.setValue(t.getMessage());
+                } else if (t instanceof SocketTimeoutException) {
+                    timeoutExceptionHappenSingleLiveEvent.setValue(true);
+                } else {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            }
+        });
+    }
+
+    public void fetchFileWithCustomerProductID(String userLoginKey, int customerProductID, boolean LoadFileData) {
+        sipSupportServiceGetAttachmentFilesViaCustomerProductID.getAttachmentFilesViaCustomerProductID(userLoginKey, customerProductID, LoadFileData).enqueue(new Callback<AttachResult>() {
+            @Override
+            public void onResponse(Call<AttachResult> call, Response<AttachResult> response) {
+                if (response.code() == 200) {
+                    if (Integer.valueOf(response.body().getErrorCode()) <= -9001) {
+                        dangerousUserSingleLiveEvent.setValue(true);
+                    } else {
+                        getAttachmentFilesViaCustomerProductIDSingleLiveEvent.setValue(response.body());
+                    }
+                } else if (response.code() == 400) {
+                    Gson gson = new GsonBuilder().create();
+                    AttachResult attachResult = new AttachResult();
+                    try {
+                        attachResult = gson.fromJson(response.errorBody().string(), AttachResult.class);
+                        if (Integer.valueOf(attachResult.getErrorCode()) <= -9001) {
+                            dangerousUserSingleLiveEvent.setValue(true);
+                        } else {
+                            getErrorAttachmentFilesViaCustomerProductIDSingleLiveEvent.setValue(attachResult.getError());
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AttachResult> call, Throwable t) {
+                if (t instanceof NoConnectivityException) {
+                    noConnection.setValue(t.getMessage());
+                } else if (t instanceof SocketTimeoutException) {
+                    timeoutExceptionHappenSingleLiveEvent.setValue(true);
+                } else {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            }
+        });
+    }
+
+    public void fetchFileWithCustomerSupportID(String userLoginKey, int customerSupportID, boolean LoadFileData) {
+        sipSupportServiceGetAttachmentFilesViaCustomerSupportID.getAttachmentFilesViaCustomerSupportID(userLoginKey, customerSupportID, LoadFileData).enqueue(new Callback<AttachResult>() {
+            @Override
+            public void onResponse(Call<AttachResult> call, Response<AttachResult> response) {
+                if (response.code() == 200) {
+                    if (Integer.valueOf(response.body().getErrorCode()) <= -9001) {
+                        dangerousUserSingleLiveEvent.setValue(true);
+                    } else {
+                        getAttachmentFilesViaCustomerSupportIDSingleLiveEvent.setValue(response.body());
+                    }
+                } else if (response.code() == 400) {
+                    Gson gson = new GsonBuilder().create();
+                    AttachResult attachResult = new AttachResult();
+                    try {
+                        attachResult = gson.fromJson(response.errorBody().string(), AttachResult.class);
+                        if (Integer.valueOf(attachResult.getErrorCode()) <= -9001) {
+                            dangerousUserSingleLiveEvent.setValue(true);
+                        } else {
+                            getErrorAttachmentFilesViaCustomerSupportIDSingleLiveEvent.setValue(attachResult.getError());
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AttachResult> call, Throwable t) {
+                if (t instanceof NoConnectivityException) {
+                    noConnection.setValue(t.getMessage());
+                } else if (t instanceof SocketTimeoutException) {
+                    timeoutExceptionHappenSingleLiveEvent.setValue(true);
+                } else {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            }
+        });
+    }
+
+    public void fetchWithAttachID(String userLoginKey, int attachID, boolean loadFileData) {
+        sipSupportServiceGetAttachmentFileViaAttachID.getAttachmentFileViaAttachID(userLoginKey, attachID, loadFileData).enqueue(new Callback<AttachResult>() {
+            @Override
+            public void onResponse(Call<AttachResult> call, Response<AttachResult> response) {
+                if (response.code() == 200) {
+                    if (Integer.valueOf(response.body().getErrorCode()) <= -9001) {
+                        dangerousUserSingleLiveEvent.setValue(true);
+                    } else {
+                        attachResultViaAttachIDSingleLiveEvent.setValue(response.body());
+                    }
+                } else if (response.code() == 400) {
+                    Gson gson = new GsonBuilder().create();
+                    AttachResult attachResult = new AttachResult();
+                    try {
+                        attachResult = gson.fromJson(response.errorBody().string(), AttachResult.class);
+                        if (Integer.valueOf(attachResult.getErrorCode()) <= -9001) {
+                            dangerousUserSingleLiveEvent.setValue(true);
+                        } else {
+                            errorAttachResultViaAttachIDSingleLiveEvent.setValue(attachResult.getError());
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AttachResult> call, Throwable t) {
                 if (t instanceof NoConnectivityException) {
                     noConnection.setValue(t.getMessage());
                 } else if (t instanceof SocketTimeoutException) {

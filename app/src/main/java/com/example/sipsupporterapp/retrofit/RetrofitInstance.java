@@ -304,6 +304,38 @@ public class RetrofitInstance {
                 .build();
     }
 
+    public static Retrofit getAttachmentFilesViaCustomerProductIDRetrofitInstance(Type type, Object typeAdapter, Context context) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new ConnectivityInterceptor(context))
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .cache(null)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl("http://" + BASE_URL + "/api/v1/attach/List_ByCustomerProduct/")
+                .addConverterFactory(createConverter(type, typeAdapter))
+                .client(client)
+                .build();
+    }
+
+    public static Retrofit getAttachmentFilesViaCustomerSupportIDRetrofitInstance(Type type, Object typeAdapter, Context context) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new ConnectivityInterceptor(context))
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .cache(null)
+                .build();
+
+        return new Retrofit.Builder()
+                .baseUrl("http://" + BASE_URL + "/api/v1/attach/List_ByCustomerSupport/")
+                .addConverterFactory(createConverter(type, typeAdapter))
+                .client(client)
+                .build();
+    }
+
     public static Retrofit getAttachmentFileViaAttachIDRetrofitInstance(Type type, Object typeAdapter, Context context) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new ConnectivityInterceptor(context))

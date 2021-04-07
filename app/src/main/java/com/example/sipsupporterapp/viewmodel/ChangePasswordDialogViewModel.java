@@ -17,6 +17,8 @@ public class ChangePasswordDialogViewModel extends AndroidViewModel {
     private SingleLiveEvent<String> errorChangedPassword;
     private SingleLiveEvent<Boolean> dangerousUserSingleLiveEvent;
     private SingleLiveEvent<Boolean> timeoutExceptionHappenSingleLiveEvent;
+    private SingleLiveEvent<String> noConnection;
+
 
     public ChangePasswordDialogViewModel(@NonNull Application application) {
         super(application);
@@ -25,6 +27,8 @@ public class ChangePasswordDialogViewModel extends AndroidViewModel {
         errorChangedPassword = repository.getErrorChangedPassword();
         dangerousUserSingleLiveEvent = repository.getDangerousUserSingleLiveEvent();
         timeoutExceptionHappenSingleLiveEvent = repository.getTimeoutExceptionHappenSingleLiveEvent();
+
+        noConnection = repository.getNoConnection();
     }
 
     public SingleLiveEvent<UserResult> getChangedPassword() {
@@ -49,6 +53,10 @@ public class ChangePasswordDialogViewModel extends AndroidViewModel {
 
     public void getSipSupportServiceChangePassword(String baseUrl) {
         repository.getSipSupportServiceChangePassword(baseUrl);
+    }
+
+    public SingleLiveEvent<String> getNoConnection() {
+        return noConnection;
     }
 
     public SingleLiveEvent<Boolean> getTimeoutExceptionHappenSingleLiveEvent() {

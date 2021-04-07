@@ -50,10 +50,10 @@ public class CenterNameDialogFragment extends DialogFragment {
             public void onChanged(Boolean aBoolean) {
                 SipSupportSharedPreferences.setUserLoginKey(getContext(), null);
                 SipSupportSharedPreferences.setUserFullName(getContext(), null);
-                SipSupportSharedPreferences.setLastValueSpinner(getContext(), null);
-                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
-                SipSupportSharedPreferences.setCustomerUserId(getContext(), -1);
+                SipSupportSharedPreferences.setCustomerUserId(getContext(), 0);
                 SipSupportSharedPreferences.setCustomerName(getContext(), null);
+                SipSupportSharedPreferences.setLastSearchQuery(getContext(), null);
+                SipSupportSharedPreferences.setCustomerTel(getContext(), null);
                 Intent intent = LoginContainerActivity.newIntent(getContext());
                 startActivity(intent);
                 getActivity().finish();
@@ -64,6 +64,14 @@ public class CenterNameDialogFragment extends DialogFragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اتصال به اینترنت با خطا مواجه شد");
+                fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
+            }
+        });
+
+        viewModel.getNoConnection().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String error) {
+                ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
         });
@@ -113,6 +121,8 @@ public class CenterNameDialogFragment extends DialogFragment {
                 SipSupportSharedPreferences.setLastSearchQuery(getContext(), customerName);
                 CustomerParameter customerParameter = new CustomerParameter(
                         customerID, customerName);
+
+                SipSupportSharedPreferences.setLastSearchQuery(getContext(), customerName);
 
                 ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
 
