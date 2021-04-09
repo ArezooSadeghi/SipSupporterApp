@@ -28,9 +28,9 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:maxLines="1"
                     android:ellipsize="end"
                     android:fontFamily="@font/iranyekanwebregular"
+                    android:maxLines="1"
                     android:textColor="@color/black"
                     android:textDirection="rtl"
                     android:textSize="12sp" />
@@ -41,11 +41,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:layout_marginTop="32dp"
+                    android:ellipsize="end"
                     android:fontFamily="@font/robotobold"
+                    android:maxLines="1"
                     android:textColor="@color/black"
                     android:textDirection="rtl"
-                    android:maxLines="1"
-                    android:ellipsize="end"
                     android:textSize="12sp" />
 
             </FrameLayout>
@@ -67,7 +67,8 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/yellow"
                 android:gravity="center"
-                android:text="ثبت پشتیبانی" />
+                android:text="ثبت پشتیبانی"
+                android:textDirection="rtl" />
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_history_support"
@@ -77,7 +78,8 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/yellow"
                 android:gravity="center"
-                android:text="سابقه پشتیبانی" />
+                android:text="سابقه پشتیبانی"
+                android:textDirection="rtl" />
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_product_list"
@@ -87,7 +89,8 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/yellow"
                 android:gravity="center"
-                android:text="لیست محصولات" />
+                android:text="لیست محصولات"
+                android:textDirection="rtl" />
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_deposit_amounts"
@@ -97,7 +100,8 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/yellow"
                 android:gravity="center"
-                android:text="مبالغ واریزی" />
+                android:text="مبالغ واریزی"
+                android:textDirection="rtl" />
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/btn_see_call_information"
@@ -107,7 +111,8 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/yellow"
                 android:gravity="center"
-                android:text="مشاهده اطلاعات تماس" />
+                android:text="مشاهده اطلاعات تماس"
+                android:textDirection="rtl" />
 
         </LinearLayout>
 

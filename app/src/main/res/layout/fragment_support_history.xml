@@ -15,7 +15,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/yellow">
 
             <FrameLayout
@@ -27,11 +27,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="14sp"
-                    android:maxLines="1"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:ellipsize="end"
                     android:fontFamily="@font/iranyekanwebregular"
-                    android:textColor="@color/black"  />
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textDirection="rtl"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/txt_count"
@@ -42,7 +45,7 @@
                     android:fontFamily="@font/robotobold"
                     android:text="تعداد پشتیبانی ها: ۰"
                     android:textColor="@color/black"
-                    android:textDirection="anyRtl"
+                    android:textDirection="rtl"
                     android:textSize="14sp" />
 
             </FrameLayout>

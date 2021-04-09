@@ -34,9 +34,6 @@ public class BitmapDiffUtils extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        if (oldBitmaps.get(oldItemPosition) == newBitmaps.get(newItemPosition)) {
-            return true;
-        }
-        return false;
+        return oldBitmaps.get(oldItemPosition) == newBitmaps.get(newItemPosition);
     }
 }

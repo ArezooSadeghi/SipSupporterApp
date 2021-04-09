@@ -21,6 +21,7 @@ import com.example.sipsupporterapp.databinding.FragmentProductsBinding;
 import com.example.sipsupporterapp.model.CustomerProductResult;
 import com.example.sipsupporterapp.model.CustomerProducts;
 import com.example.sipsupporterapp.model.ServerData;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.activity.ImageListContainerActivity;
 import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
@@ -72,7 +73,8 @@ public class ProductsFragment extends Fragment {
                 container,
                 false);
 
-        binding.txtCustomerName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
+        String customerName = Converter.convert(SipSupportSharedPreferences.getCustomerName(getContext()));
+        binding.txtCustomerName.setText(customerName);
         initRecyclerView();
         setListener();
 

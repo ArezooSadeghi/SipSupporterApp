@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.AttachmentAdapterItemBinding;
+import com.example.sipsupporterapp.diffutils.BitmapDiffUtils;
 import com.example.sipsupporterapp.viewmodel.AttachmentViewModel;
 
 import java.util.List;
@@ -45,6 +47,13 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
                 viewModel.getAttachmentAdapterItemClickedSingleLiveEvent().setValue(bitmaps.get(position));
             }
         });
+    }
+
+    public void updateBitmaps(List<Bitmap> newBitmaps) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BitmapDiffUtils(bitmaps, newBitmaps));
+        diffResult.dispatchUpdatesTo(this);
+        bitmaps.clear();
+        bitmaps.addAll(newBitmaps);
     }
 
     @Override

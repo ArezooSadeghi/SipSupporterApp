@@ -21,6 +21,7 @@ import com.example.sipsupporterapp.databinding.FragmentSupportHistoryBinding;
 import com.example.sipsupporterapp.model.CustomerSupportInfo;
 import com.example.sipsupporterapp.model.CustomerSupportResult;
 import com.example.sipsupporterapp.model.ServerData;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.activity.ImageListContainerActivity;
 import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
@@ -66,8 +67,7 @@ public class SupportHistoryFragment extends Fragment {
                 container,
                 false);
 
-        binding.txtUserFullName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
-        initRecyclerView();
+        initView();
 
         ServerData serverData = viewModel
                 .getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
@@ -87,7 +87,9 @@ public class SupportHistoryFragment extends Fragment {
     }
 
 
-    private void initRecyclerView() {
+    private void initView() {
+        String customerName = Converter.convert(SipSupportSharedPreferences.getCustomerName(getContext()));
+        binding.txtUserFullName.setText(customerName);
         binding.recyclerViewSupportHistory.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewSupportHistory.addItemDecoration(new DividerItemDecoration(
                 binding.recyclerViewSupportHistory.getContext(),

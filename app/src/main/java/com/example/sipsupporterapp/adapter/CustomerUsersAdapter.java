@@ -2,7 +2,6 @@ package com.example.sipsupporterapp.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.CustomerUsersAdapterItemBinding;
 import com.example.sipsupporterapp.model.CustomerUsers;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.viewmodel.CustomerUsersViewModel;
 
@@ -86,7 +86,8 @@ public class CustomerUsersAdapter extends RecyclerView.Adapter<CustomerUsersAdap
         }
 
         public void bindCustomerSupportInfo(CustomerUsers customerUsers) {
-            binding.txtCustomerUserName.setText(customerUsers.getUserName());
+            String userName = Converter.convert(customerUsers.getUserName());
+            binding.txtCustomerUserName.setText(userName);
             binding.txtLastSeen.setText(customerUsers.getLastSeen());
         }
     }

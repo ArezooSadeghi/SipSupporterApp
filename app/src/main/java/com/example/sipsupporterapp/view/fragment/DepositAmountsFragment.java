@@ -21,6 +21,7 @@ import com.example.sipsupporterapp.databinding.FragmentDepositAmountsBinding;
 import com.example.sipsupporterapp.model.CustomerPaymentInfo;
 import com.example.sipsupporterapp.model.CustomerPaymentResult;
 import com.example.sipsupporterapp.model.ServerData;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.activity.ImageListContainerActivity;
 import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
@@ -70,8 +71,10 @@ public class DepositAmountsFragment extends Fragment {
                 null,
                 false);
 
-        binding.txtCustomerName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
-        binding.txtUserName.setText(SipSupportSharedPreferences.getUserFullName(getContext()));
+        String customerName = Converter.convert(SipSupportSharedPreferences.getCustomerName(getContext()));
+        String userName = Converter.convert(SipSupportSharedPreferences.getUserFullName(getContext()));
+        binding.txtCustomerName.setText(customerName);
+        binding.txtUserName.setText(userName);
 
         initRecyclerView();
         setListener();

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.ProductsAdapeterItemBinding;
 import com.example.sipsupporterapp.model.CustomerProducts;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.viewmodel.RegisterProductViewModel;
 
 import java.text.DecimalFormat;
@@ -60,10 +61,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                 @SuppressLint("RestrictedApi") MenuPopupHelper menuHelper = new MenuPopupHelper(context, (MenuBuilder) menu.getMenu(), holder.binding.imgMore);
                 menuHelper.setForceShowIcon(true);
 
-
-               /* PopupMenu popup = new PopupMenu(context, holder.binding.imgMore);
-                popup.inflate(R.menu.more_menu);
-*/
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -76,8 +73,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                                 return true;
                             case R.id.item_see_documents:
                                 viewModel.getProductAdapterSeeDocumentsClickedSingleLiveEvent().setValue(customerProducts.get(position));
-                                /*viewModel.getAttachFileSingleLiveEvent().setValue(customerProducts.get(position));*/
-                                /* viewModel.getProductAdapterSeeDocumentsClickedSingleLiveEvent().setValue(customerProducts.get(position));*/
                                 return true;
                             default:
                                 return false;
@@ -104,18 +99,21 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         }
 
         public void bindCustomerProducts(CustomerProducts customerProducts) {
-            binding.txtProductName.setText(customerProducts.getProductName());
+            String productName = Converter.convert(customerProducts.getProductName());
+            binding.txtProductName.setText(productName);
             if (!customerProducts.getDescription().isEmpty()) {
                 binding.txtDescription.setVisibility(View.VISIBLE);
-                binding.txtDescription.setText(customerProducts.getDescription());
+                String description = Converter.convert(customerProducts.getDescription());
+                binding.txtDescription.setText(description);
             }
 
-            binding.txtUserName.setText(customerProducts.getUserFullName());
+            String userFullName = Converter.convert(customerProducts.getUserFullName());
+            binding.txtUserName.setText(userFullName);
 
-            String addTime = String.valueOf(customerProducts.getAddTime());
+           /* String addTime = String.valueOf(customerProducts.getAddTime());
             String str = addTime.substring(0, 4) + "/" + addTime.substring(4, 6) + "/" + addTime.substring(6, 10) + ":" + addTime.substring(10, 12) + ":" + addTime.substring(12);
             binding.txtAddTime.setText(str);
-
+*/
 
             NumberFormat formatter = new DecimalFormat("#,###");
             String formattedNumber = formatter.format(customerProducts.getInvoicePrice());

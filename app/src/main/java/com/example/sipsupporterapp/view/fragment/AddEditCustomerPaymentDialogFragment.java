@@ -233,7 +233,13 @@ public class AddEditCustomerPaymentDialogFragment extends DialogFragment {
                 String bankAccountName = value;
                 customerPaymentInfo.setBankAccountName(bankAccountName);
 
-                customerPaymentInfo.setDatePayment(datePayment);
+                if (datePayment == 0) {
+                    String date = binding.btnDepositDate.getText().toString();
+                    date = date.replaceAll("/", "");
+                    customerPaymentInfo.setDatePayment(Integer.valueOf(date));
+                } else {
+                    customerPaymentInfo.setDatePayment(datePayment);
+                }
 
                 customerPaymentInfo.setCustomerID(customerID);
                 customerPaymentInfo.setCustomerPaymentID(customerPaymentID);
@@ -304,6 +310,7 @@ public class AddEditCustomerPaymentDialogFragment extends DialogFragment {
         viewModel.getAddCustomerPaymentsSingleLiveEvent().observe(this, new Observer<CustomerPaymentResult>() {
             @Override
             public void onChanged(CustomerPaymentResult customerPaymentResult) {
+                Log.d("Arezoo", customerPaymentResult.getCustomerPayments()[0].getDatePayment() + "");
                 SuccessfulAddCustomerPaymentDialogFragment fragment = SuccessfulAddCustomerPaymentDialogFragment.newInstance();
                 fragment.show(getParentFragmentManager(), SuccessfulAddCustomerPaymentDialogFragment.TAG);
             }

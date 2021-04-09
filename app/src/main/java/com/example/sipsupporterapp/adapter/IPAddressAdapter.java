@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.IpAddressAdapterItemBinding;
 import com.example.sipsupporterapp.model.ServerData;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.viewmodel.SharedLoginAndAddAndEditIPAddressDialogAndIPAddressListDialogViewModel;
 
 import java.util.List;
@@ -81,7 +82,8 @@ public class IPAddressAdapter extends RecyclerView.Adapter<IPAddressAdapter.IPAd
         }
 
         public void bindServerData(ServerData serverData) {
-            binding.txtCenterName.setText(serverData.getCenterName());
+            String centerName = Converter.convert(serverData.getCenterName());
+            binding.txtCenterName.setText(centerName);
             binding.txtIpAddress.setText(serverData.getIpAddress());
         }
     }

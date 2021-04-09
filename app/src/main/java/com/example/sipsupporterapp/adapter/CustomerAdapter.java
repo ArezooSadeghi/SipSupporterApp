@@ -2,7 +2,6 @@ package com.example.sipsupporterapp.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.CustomerAdapterItemBinding;
 import com.example.sipsupporterapp.model.CustomerInfo;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.viewmodel.SharedCenterNameDialogAndCustomerViewModel;
 
@@ -82,25 +82,13 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
         }
 
         public void bindCustomInfo(CustomerInfo customerInfo) {
-            binding.txtCity.setText(customerInfo.getCity());
+            String city = Converter.convert(customerInfo.getCity());
+            binding.txtCity.setText(city);
             binding.txtLastSeen.setText(customerInfo.getLastSeen());
 
-            String output = replace(customerInfo);
-            binding.txtCustomerName.setText(output);
+            String customerName = Converter.convert(customerInfo.getCustomerName());
+            binding.txtCustomerName.setText(customerName);
             binding.txtCustomerID.setText(String.valueOf(customerInfo.getCustomerID()));
-        }
-
-        private String replace(CustomerInfo customerInfo) {
-            String input = customerInfo.getCustomerName();
-            String output = "";
-            for (int i = 0; i < input.length(); i++) {
-                if (input.charAt(i) == 'ي') {
-                    output += 'ی';
-                } else {
-                    output += input.charAt(i);
-                }
-            }
-            return output;
         }
     }
 }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.CustomerPaymentInfoAdapterItemBinding;
 import com.example.sipsupporterapp.model.CustomerPaymentInfo;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.viewmodel.DepositAmountsViewModel;
 
 import java.util.List;
@@ -93,9 +94,11 @@ public class CustomerPaymentInfoAdapter extends RecyclerView.Adapter<CustomerPay
         }
 
         public void bindCustomerPaymentInfo(CustomerPaymentInfo customerPaymentInfo) {
-            binding.txtBankAccountName.setText(customerPaymentInfo.getBankAccountName());
+            String bankAccountName = Converter.convert(customerPaymentInfo.getBankAccountName());
+            binding.txtBankAccountName.setText(bankAccountName);
             binding.txtBankAccountNo.setText(customerPaymentInfo.getBankAccountNO());
-            binding.txtBankName.setText(customerPaymentInfo.getBankName());
+            String bankName = Converter.convert(customerPaymentInfo.getBankName());
+            binding.txtBankName.setText(bankName);
         }
     }
 }

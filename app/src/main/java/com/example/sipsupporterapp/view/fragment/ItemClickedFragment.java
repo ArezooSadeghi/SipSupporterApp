@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sipsupporterapp.R;
 import com.example.sipsupporterapp.databinding.FragmentItemClickedBinding;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.activity.CustomerUsersContainerActivity;
 import com.example.sipsupporterapp.view.activity.DepositAmountsContainerActivity;
@@ -57,8 +58,10 @@ public class ItemClickedFragment extends Fragment {
                 container,
                 false);
 
-        binding.txtUserName.setText(SipSupportSharedPreferences.getUserFullName(getContext()));
-        binding.txtCustomerName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
+        String customerName = Converter.convert(SipSupportSharedPreferences.getCustomerName(getContext()));
+        String userName = Converter.convert(SipSupportSharedPreferences.getUserFullName(getContext()));
+        binding.txtUserName.setText(userName);
+        binding.txtCustomerName.setText(customerName);
 
         setListener();
 

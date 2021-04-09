@@ -3,8 +3,11 @@ package com.example.sipsupporterapp.view.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -141,6 +144,30 @@ public class AddAndEditIPAddressDialogFragment extends DialogFragment {
                         dismiss();
                     }
                 }
+            }
+        });
+
+        binding.edTextCenterName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                if (actionId == 0 || actionId == EditorInfo.IME_ACTION_DONE) {
+                    binding.edTextIpAddress.requestFocus();
+                }
+                return false;
+            }
+        });
+
+        binding.edTextIpAddress.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                if (actionId == 0 || actionId == EditorInfo.IME_ACTION_DONE) {
+                    binding.edTextPort.requestFocus();
+                }
+                return false;
             }
         });
     }

@@ -40,7 +40,6 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/custom_spinner"
                 android:fontFamily="@font/iranyekanwebbold"
                 android:textColor="@color/white"
                 android:textDirection="rtl"
@@ -75,7 +74,7 @@
                 android:layout_marginRight="16dp"
                 android:hint="@string/user_name_hint"
                 android:textColorHint="@color/yellow"
-                app:boxStrokeColor="#808080"
+                app:boxStrokeColor="#696969"
                 app:hintTextColor="@color/yellow"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/spinner">
@@ -103,7 +102,7 @@
                 android:layout_marginRight="16dp"
                 android:hint="@string/password_hint"
                 android:textColorHint="@color/yellow"
-                app:boxStrokeColor="#808080"
+                app:boxStrokeColor="#696969"
                 app:hintTextColor="@color/yellow"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/outlinedTextField1">
@@ -135,20 +134,27 @@
                 android:textColor="@color/black"
                 android:textDirection="rtl"
                 android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/outlinedTextField2" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <RelativeLayout
+            android:id="@+id/loading_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.4"
+            android:background="#696969"
+            android:visibility="gone">
+
             <ProgressBar
-                android:id="@+id/progress_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_login" />
+                android:layout_centerInParent="true"
+                android:indeterminate="true" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
     </FrameLayout>
 

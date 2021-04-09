@@ -73,7 +73,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_product_Name" />
 
-        <TextView
+     <!--   <TextView
             android:id="@+id/txt_add_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@id/txt_product_Name"
             app:layout_constraintStart_toEndOf="@id/img_more"
-            app:layout_constraintTop_toTopOf="@id/txt_product_Name" />
+            app:layout_constraintTop_toTopOf="@id/txt_product_Name" />-->
 
         <CheckBox
             android:id="@+id/check_box_finish"

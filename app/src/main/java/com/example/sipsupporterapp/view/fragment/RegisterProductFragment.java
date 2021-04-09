@@ -24,6 +24,7 @@ import com.example.sipsupporterapp.model.CustomerProducts;
 import com.example.sipsupporterapp.model.ProductInfo;
 import com.example.sipsupporterapp.model.ProductResult;
 import com.example.sipsupporterapp.model.ServerData;
+import com.example.sipsupporterapp.utils.Converter;
 import com.example.sipsupporterapp.utils.SipSupportSharedPreferences;
 import com.example.sipsupporterapp.view.activity.LoginContainerActivity;
 import com.example.sipsupporterapp.viewmodel.RegisterProductViewModel;
@@ -117,7 +118,8 @@ public class RegisterProductFragment extends DialogFragment {
                 null,
                 false);
 
-        binding.txtCustomerName.setText(SipSupportSharedPreferences.getCustomerName(getContext()));
+        String customerName = Converter.convert(SipSupportSharedPreferences.getCustomerName(getContext()));
+        binding.txtCustomerName.setText(customerName);
         binding.edTextDescription.setText(description);
         binding.edTextDescription.setSelection(binding.edTextDescription.getText().toString().length());
 

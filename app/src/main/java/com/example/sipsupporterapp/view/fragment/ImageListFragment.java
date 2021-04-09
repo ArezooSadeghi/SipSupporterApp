@@ -56,10 +56,13 @@ public class ImageListFragment extends Fragment {
 
     public static final String TAG = ImageListFragment.class.getSimpleName();
 
-    private List<Bitmap> bitmapList = new ArrayList<>();
+    private List<Bitmap> oldBitmapList = new ArrayList<>();
+    private List<Bitmap> newBitmapList = new ArrayList<>();
     private List<AttachInfo> attachInfoList = new ArrayList<>();
 
     private boolean flag = false;
+
+    private AttachmentAdapter adapter;
 
     private int index = 0;
 
@@ -82,6 +85,8 @@ public class ImageListFragment extends Fragment {
         customerSupportID = getArguments().getInt(ARGS_CUSTOMER_SUPPORT_ID);
         customerProductID = getArguments().getInt(ARGS_CUSTOMER_PRODUCT_ID);
         customerPaymentID = getArguments().getInt(ARGS_CUSTOMER_PAYMENT_ID);
+
+        Log.d("Arezoo", customerPaymentID + "");
 
         mViewModel = new ViewModelProvider(requireActivity()).get(AttachmentViewModel.class);
 
@@ -154,7 +159,7 @@ public class ImageListFragment extends Fragment {
                     }
                 } else {
                     mBinding.progressBarLoading.setVisibility(View.GONE);
-                    ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اجازه دسترسی به محل ذخیره سازی داده نشد");
+                    ErrorDialogFragment fragment = ErrorDialogFragment.newInstance("اجازه دسترسی داده نشد");
                     fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
                 }
         }
@@ -186,21 +191,22 @@ public class ImageListFragment extends Fragment {
         mViewModel.getGetAttachmentFilesViaCustomerSupportIDSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<AttachResult>() {
             @Override
             public void onChanged(AttachResult attachResult) {
-                readFile(attachResult.getAttachs());
-                if (bitmapList.size() != 0) {
+                if (attachResult.getAttachs().length == 0) {
                     mBinding.progressBarLoading.setVisibility(View.GONE);
-                    mBinding.recyclerViewAttachmentFiles.setVisibility(View.VISIBLE);
-                    String count = convertEnDigitToPer(String.valueOf(bitmapList.size()));
-                    mBinding.txtCountAttachmentFiles.setText("تعداد فایل ها: " + count);
-                    setupAdapter(bitmapList);
                 } else {
-                    mBinding.progressBarLoading.setVisibility(View.GONE);
-                }
-
-                if (attachInfoList.size() != 0 & index == 0) {
-                    ServerData serverData = mViewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
-                    mViewModel.getSipSupportServiceGetAttachmentFileViaAttachIDRetrofitInstance(serverData.getIpAddress() + ":" + serverData.getPort());
-                    mViewModel.fetchWithAttachID(SipSupportSharedPreferences.getUserLoginKey(getContext()), attachInfoList.get(index).getAttachID(), true);
+                    readFile(attachResult.getAttachs());
+                    if (oldBitmapList.size() != 0) {
+                        mBinding.progressBarLoading.setVisibility(View.GONE);
+                        mBinding.recyclerViewAttachmentFiles.setVisibility(View.VISIBLE);
+                        String count = convertEnDigitToPer(String.valueOf(oldBitmapList.size()));
+                        mBinding.txtCountAttachmentFiles.setText("تعداد فایل ها: " + count);
+                        setupAdapter(oldBitmapList);
+                    }
+                    if (attachInfoList.size() != 0 & index == 0) {
+                        ServerData serverData = mViewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
+                        mViewModel.getSipSupportServiceGetAttachmentFileViaAttachIDRetrofitInstance(serverData.getIpAddress() + ":" + serverData.getPort());
+                        mViewModel.fetchWithAttachID(SipSupportSharedPreferences.getUserLoginKey(getContext()), attachInfoList.get(index).getAttachID(), true);
+                    }
                 }
             }
         });
@@ -217,21 +223,22 @@ public class ImageListFragment extends Fragment {
         mViewModel.getGetAttachmentFilesViaCustomerProductIDSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<AttachResult>() {
             @Override
             public void onChanged(AttachResult attachResult) {
-                readFile(attachResult.getAttachs());
-                if (bitmapList.size() != 0) {
+                if (attachResult.getAttachs().length == 0) {
                     mBinding.progressBarLoading.setVisibility(View.GONE);
-                    mBinding.recyclerViewAttachmentFiles.setVisibility(View.VISIBLE);
-                    String count = convertEnDigitToPer(String.valueOf(bitmapList.size()));
-                    mBinding.txtCountAttachmentFiles.setText("تعداد فایل ها: " + count);
-                    setupAdapter(bitmapList);
-                }else {
-                    mBinding.progressBarLoading.setVisibility(View.GONE);
-                }
-
-                if (attachInfoList.size() != 0 & index == 0) {
-                    ServerData serverData = mViewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
-                    mViewModel.getSipSupportServiceGetAttachmentFileViaAttachIDRetrofitInstance(serverData.getIpAddress() + ":" + serverData.getPort());
-                    mViewModel.fetchWithAttachID(SipSupportSharedPreferences.getUserLoginKey(getContext()), attachInfoList.get(index).getAttachID(), true);
+                } else {
+                    readFile(attachResult.getAttachs());
+                    if (oldBitmapList.size() != 0) {
+                        mBinding.progressBarLoading.setVisibility(View.GONE);
+                        mBinding.recyclerViewAttachmentFiles.setVisibility(View.VISIBLE);
+                        String count = convertEnDigitToPer(String.valueOf(oldBitmapList.size()));
+                        mBinding.txtCountAttachmentFiles.setText("تعداد فایل ها: " + count);
+                        setupAdapter(oldBitmapList);
+                    }
+                    if (attachInfoList.size() != 0 & index == 0) {
+                        ServerData serverData = mViewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
+                        mViewModel.getSipSupportServiceGetAttachmentFileViaAttachIDRetrofitInstance(serverData.getIpAddress() + ":" + serverData.getPort());
+                        mViewModel.fetchWithAttachID(SipSupportSharedPreferences.getUserLoginKey(getContext()), attachInfoList.get(index).getAttachID(), true);
+                    }
                 }
             }
         });
@@ -248,21 +255,22 @@ public class ImageListFragment extends Fragment {
         mViewModel.getGetAttachmentFilesViaCustomerPaymentIDSingleLiveEvent().observe(getViewLifecycleOwner(), new Observer<AttachResult>() {
             @Override
             public void onChanged(AttachResult attachResult) {
-                readFile(attachResult.getAttachs());
-                if (bitmapList.size() != 0) {
+                if (attachResult.getAttachs().length == 0) {
                     mBinding.progressBarLoading.setVisibility(View.GONE);
-                    mBinding.recyclerViewAttachmentFiles.setVisibility(View.VISIBLE);
-                    String count = convertEnDigitToPer(String.valueOf(bitmapList.size()));
-                    mBinding.txtCountAttachmentFiles.setText("تعداد فایل ها: " + count);
-                    setupAdapter(bitmapList);
-                }else {
-                    mBinding.progressBarLoading.setVisibility(View.GONE);
-                }
-
-                if (attachInfoList.size() != 0 & index == 0) {
-                    ServerData serverData = mViewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
-                    mViewModel.getSipSupportServiceGetAttachmentFileViaAttachIDRetrofitInstance(serverData.getIpAddress() + ":" + serverData.getPort());
-                    mViewModel.fetchWithAttachID(SipSupportSharedPreferences.getUserLoginKey(getContext()), attachInfoList.get(index).getAttachID(), true);
+                } else {
+                    readFile(attachResult.getAttachs());
+                    if (oldBitmapList.size() != 0) {
+                        mBinding.progressBarLoading.setVisibility(View.GONE);
+                        mBinding.recyclerViewAttachmentFiles.setVisibility(View.VISIBLE);
+                        String count = convertEnDigitToPer(String.valueOf(oldBitmapList.size()));
+                        mBinding.txtCountAttachmentFiles.setText("تعداد فایل ها: " + count);
+                        setupAdapter(oldBitmapList);
+                    }
+                    if (attachInfoList.size() != 0 & index == 0) {
+                        ServerData serverData = mViewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
+                        mViewModel.getSipSupportServiceGetAttachmentFileViaAttachIDRetrofitInstance(serverData.getIpAddress() + ":" + serverData.getPort());
+                        mViewModel.fetchWithAttachID(SipSupportSharedPreferences.getUserLoginKey(getContext()), attachInfoList.get(index).getAttachID(), true);
+                    }
                 }
             }
         });
@@ -292,6 +300,13 @@ public class ImageListFragment extends Fragment {
                                         ServerData serverData = mViewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
                                         mViewModel.getSipSupportServiceGetAttachmentFileViaAttachIDRetrofitInstance(serverData.getIpAddress() + ":" + serverData.getPort());
                                         mViewModel.fetchWithAttachID(SipSupportSharedPreferences.getUserLoginKey(getContext()), attachInfoList.get(index).getAttachID(), true);
+                                    } else {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mBinding.progressBarLoading.setVisibility(View.GONE);
+                                            }
+                                        });
                                     }
                                 }
                             } catch (IOException e) {
@@ -318,12 +333,18 @@ public class ImageListFragment extends Fragment {
             @Override
             public void onChanged(AttachInfo[] attachInfoArray) {
                 if (attachInfoArray[0].getFileData() != null) {
-                    bitmapList.add(read(attachInfoArray));
+                    if (newBitmapList.size() == 0) {
+                        oldBitmapList.add(read(attachInfoArray));
+                        newBitmapList.addAll(oldBitmapList);
+                    } else {
+                        oldBitmapList.addAll(newBitmapList);
+                        newBitmapList.add(read(attachInfoArray));
+                    }
+                    String count = convertEnDigitToPer(String.valueOf(newBitmapList.size()));
+                    mBinding.txtCountAttachmentFiles.setText("تعداد فایل ها: " + count);
                     mBinding.progressBarLoading.setVisibility(View.GONE);
                     mBinding.recyclerViewAttachmentFiles.setVisibility(View.VISIBLE);
-                    String count = convertEnDigitToPer(String.valueOf(bitmapList.size()));
-                    mBinding.txtCountAttachmentFiles.setText("تعداد فایل ها: " + count);
-                    setupAdapter(bitmapList);
+                    setupAdapter(oldBitmapList);
                     index++;
                     if (index < attachInfoList.size()) {
                         ServerData serverData = mViewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
@@ -438,8 +459,13 @@ public class ImageListFragment extends Fragment {
     }
 
     private void setupAdapter(List<Bitmap> bitmaps) {
-        AttachmentAdapter adapter = new AttachmentAdapter(getContext(), bitmaps, mViewModel);
-        mBinding.recyclerViewAttachmentFiles.setAdapter(adapter);
+        if (adapter == null) {
+            adapter = new AttachmentAdapter(getContext(), bitmaps, mViewModel);
+            mBinding.recyclerViewAttachmentFiles.setAdapter(adapter);
+        } else {
+            adapter.updateBitmaps(newBitmapList);
+            mBinding.recyclerViewAttachmentFiles.setAdapter(adapter);
+        }
     }
 
     private String convertEnDigitToPer(String enDigit) {
@@ -468,8 +494,8 @@ public class ImageListFragment extends Fragment {
                         if (f.getName().equals(attachInfo.getAttachID() + ".jpg")) {
                             flag = true;
                             Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
-                            bitmapList.add(bitmap);
-                            mViewModel.getBitmapListSingleLiveEvent().setValue(bitmapList);
+                            oldBitmapList.add(bitmap);
+                            mViewModel.getBitmapListSingleLiveEvent().setValue(oldBitmapList);
                             break;
                         }
                     }
@@ -485,7 +511,7 @@ public class ImageListFragment extends Fragment {
                 attachInfoList.add(attachInfo);
             }
         }
-        return bitmapList;
+        return oldBitmapList;
     }
 
     private Bitmap read(AttachInfo[] attachInfoArray) {

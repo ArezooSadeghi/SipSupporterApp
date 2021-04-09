@@ -31,9 +31,9 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:maxLines="1"
                     android:ellipsize="end"
                     android:fontFamily="@font/iranyekanwebregular"
+                    android:maxLines="1"
                     android:textColor="@color/black"
                     android:textDirection="rtl"
                     android:textSize="12sp" />
@@ -67,7 +67,7 @@
                 android:id="@+id/recycler_view_deposit_amounts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="48dp"
+                android:layout_marginBottom="55dp"
                 android:visibility="gone" />
 
             <com.google.android.material.bottomappbar.BottomAppBar

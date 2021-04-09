@@ -2,9 +2,12 @@ package com.example.sipsupporterapp.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -98,7 +101,7 @@ public class LoginFragment extends Fragment {
                         SipSupportSharedPreferences
                                 .setUserName(getContext(), binding.edTextUserName.getText().toString());
                         SipSupportSharedPreferences.setLastValueSpinner(getContext(), spinnerValue);
-                        binding.progressBar.setVisibility(View.GONE);
+                        binding.loadingLayout.setVisibility(View.GONE);
                         UserInfo[] userInfoArray = userResult.getUsers();
                         if (userInfoArray.length != 0) {
                             SipSupportSharedPreferences
@@ -116,7 +119,7 @@ public class LoginFragment extends Fragment {
         viewModel.getErrorUserResult().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                binding.progressBar.setVisibility(View.GONE);
+                binding.loadingLayout.setVisibility(View.GONE);
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
@@ -125,7 +128,7 @@ public class LoginFragment extends Fragment {
         viewModel.getNoConnection().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String error) {
-                binding.progressBar.setVisibility(View.GONE);
+                binding.loadingLayout.setVisibility(View.GONE);
                 ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                 fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
             }
@@ -135,7 +138,7 @@ public class LoginFragment extends Fragment {
                 .observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean isTimeOutExceptionHappen) {
-                        binding.progressBar.setVisibility(View.GONE);
+                        binding.loadingLayout.setVisibility(View.GONE);
                         ErrorDialogFragment fragment = ErrorDialogFragment
                                 .newInstance("اتصال به اینترنت با خطا مواجه شد");
                         fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
@@ -146,7 +149,7 @@ public class LoginFragment extends Fragment {
                 .observe(getViewLifecycleOwner(), new Observer<String>() {
                     @Override
                     public void onChanged(String error) {
-                        binding.progressBar.setVisibility(View.GONE);
+                        binding.loadingLayout.setVisibility(View.GONE);
                         ErrorDialogFragment fragment = ErrorDialogFragment.newInstance(error);
                         fragment.show(getParentFragmentManager(), ErrorDialogFragment.TAG);
                     }
@@ -239,7 +242,7 @@ public class LoginFragment extends Fragment {
                     viewModel.getSipSupportServicePostUserLoginParameter(
                             serverData.getIpAddress() + ":" + serverData.getPort());
                     viewModel.fetchUserResult(userLoginParameter);
-                    binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.loadingLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -249,6 +252,18 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 fragment = IPAddressListDialogFragment.newInstance();
                 fragment.show(getParentFragmentManager(), IPAddressListDialogFragment.TAG);
+            }
+        });
+
+        binding.edTextUserName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                if (actionId == 0 || actionId == EditorInfo.IME_ACTION_DONE) {
+                    binding.edTextPassword.requestFocus();
+                }
+                return false;
             }
         });
     }
