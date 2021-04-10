@@ -131,8 +131,9 @@ public class RegisterProductFragment extends DialogFragment {
             String dateFormat = year + "/" + month + "/" + day;
             String persianDateFormat = convertEnToPer(dateFormat);
             binding.btnDateExpiration.setText(dateFormat);
+        } else {
+            binding.btnDateExpiration.setText(SipSupportSharedPreferences.getDate(getContext()));
         }
-
 
         binding.edTextInvoicePrice.addTextChangedListener(new TextWatcher() {
             @Override
@@ -224,7 +225,13 @@ public class RegisterProductFragment extends DialogFragment {
                 customerProducts.setInvoicePayment(paymentPrice);
                 customerProducts.setFinish(finish);
                 customerProducts.setDescription(description);
+                if (expireDate == 0) {
+                    String date = binding.btnDateExpiration.getText().toString().replaceAll("/", "");
+                    expireDate = Long.valueOf(expireDate);
+                    Log.d("Arezoo", expireDate + "");
+                }
                 customerProducts.setExpireDate(expireDate);
+                Log.d("Arezoo", expireDate + "");
 
                 if (isAdd) {
                     ServerData serverData = viewModel.getServerData(SipSupportSharedPreferences.getLastValueSpinner(getContext()));
@@ -299,6 +306,7 @@ public class RegisterProductFragment extends DialogFragment {
         viewModel.getGetProductResultSingleLiveEvent().observe(this, new Observer<ProductResult>() {
             @Override
             public void onChanged(ProductResult productResult) {
+                Log.d("Arezoo", productResult.getProducts()[0].getAddTime() + "");
                 for (ProductInfo productInfo : productResult.getProducts()) {
                     map.put(productInfo.getProductName(), productInfo.getProductID());
                 }

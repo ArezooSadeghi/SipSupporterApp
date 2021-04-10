@@ -70,7 +70,7 @@ public class IPAddressAdapter extends RecyclerView.Adapter<IPAddressAdapter.IPAd
 
     @Override
     public int getItemCount() {
-        return serverDataList.size();
+        return serverDataList == null ? 0 : serverDataList.size();
     }
 
     public class IPAddressHolder extends RecyclerView.ViewHolder {
